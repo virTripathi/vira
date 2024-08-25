@@ -1,0 +1,36 @@
+version: '2.29.1'
+
+services:
+  mini-jarvis-docker:
+    container_name: mini_jarvis_container
+    build: .
+    volumes:
+      - .:/var/www/html
+      - ./node_modules:/var/www/html/node_modules  # Avoids re-installation of node_modules
+    ports:
+      - "9000:80"
+      - "5173:5173"  # Expose Vite's port if needed
+    depends_on:
+      - mysql_db
+
+  mysql_db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: jarvis@123
+      MYSQL_DATABASE: mini_jarvis
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    ports:
+      - "9001:80"
+    environment:
+      - PMA_ARBITRARY=1
+    depends_on:
+      - mysql_db
+
+volumes:
+  mysql_data:
