@@ -2,7 +2,7 @@
 
 ## About Application
 
-Mini Jarvis is a advanced task management platform where you can create and have a log of your tasks:
+Mini Jarvis is a advanced task management platform built on top of Laravel and React JS where you can create and have a log of your tasks:
 
 ## Running Application
 
@@ -15,3 +15,4 @@ If you're using windows, [install WSL2](https://learn.microsoft.com/en-us/window
 4. docker-compose build --up
 5. Run docker-compose exec mini-jarvis-docker php artisan migrate --seed to migrate tables and seed the db.
 6. Wait for a few minutes and your application will start running on localhost:9000/public and mysql_db instance in [9001 port](http://localhost:9001/index.php?route=/).
+7. Run localhost:9000/public/task_export.php to download all the tasks in csv format.
