@@ -9,7 +9,7 @@ import { format, parseISO } from "date-fns";
 import { DayPicker } from "react-day-picker";
 import { ChevronRightIcon, ChevronLeftIcon } from "@heroicons/react/24/outline";
 
-export default function Datepicker({ value, onChange, ...props }) {
+export default function DatePicker({ value, onChange, ...props }) {
   const [date, setDate] = React.useState(value ? parseISO(value) : undefined);
 
   React.useEffect(() => {

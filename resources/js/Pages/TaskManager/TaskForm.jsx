@@ -2,7 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import SelectInput from '@/Components/SelectInput';
-import DatePicker from '@/Components/DatePicker'; // Import the updated DatePicker
+import DatePicker from '@/Components/DatePicker';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { XMarkIcon } from '@heroicons/react/24/solid'

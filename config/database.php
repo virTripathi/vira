@@ -63,6 +63,26 @@ return [
             ]) : [],
         ],
 
+        'mysql_docker' => [
+            'driver' => 'mysql',
+            'url' => env('DOCKER_DATABASE_URL'),
+            'host' => env('DOCKER_DB_HOST', 'mysql_docker'),
+            'port' => env('DOCKER_DB_PORT', '3307'),
+            'database' => env('DOCKER_DB_DATABASE', 'forge'),
+            'username' => env('DOCKER_DB_USERNAME', 'forge'),
+            'password' => env('DOCKER_DB_PASSWORD', ''),
+            'unix_socket' => env('DOCKER_DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),
