@@ -58,18 +58,16 @@ export default function Sidebar() {
           </ListItem>
           <AccordionBody className="py-1">
             <List className="p-0">
-              {/* <ListItem className={route().current('dashboard') ? 'bg-black text-white' : ''}>
-                <ListItemPrefix>
-                  <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                </ListItemPrefix>
-                <NavLink href={route('dashboard')} active={route().current('dashboard')}>Dashboard</NavLink>
-              </ListItem> */}
-              <ListItem className={route().current('tasks.index') ? 'bg-black text-white' : ''}>
-                <ListItemPrefix>
-                  <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                </ListItemPrefix>
-                <NavLink href={route('tasks.index')} active={route().current('tasks.index')}>Task</NavLink>
-              </ListItem>
+              <NavLink href={route('tasks.index')} active={route().current('tasks.index')}>
+                <ListItem className={route().current('tasks.index') ? 'bg-black text-white' : ''}>
+                
+                  <ListItemPrefix>
+                    <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
+                  </ListItemPrefix>
+                  Task
+                </ListItem>
+                </NavLink>
+              
             </List>
           </AccordionBody>
         </Accordion>
@@ -94,18 +92,22 @@ export default function Sidebar() {
           </ListItem>
           <AccordionBody className="py-1">
             <List className="p-0">
+            <NavLink href={route('profile.edit')} active={route().current('profile.edit')}>
             <ListItem className={route().current('profile.edit') ? 'bg-black text-white' : ''}>
                     <ListItemPrefix>
                         <UserCircleIcon className="h-5 w-5" />
                     </ListItemPrefix>
-                    <NavLink href={route('profile.edit')} active={route().current('profile.edit')}>Profile</NavLink>
+                    Profile
                 </ListItem>
+                </NavLink>
+                <NavLink href={route('logout')} method="post" as="button">
                 <ListItem className={route().current('logout') ? 'bg-black text-white' : ''}>
                     <ListItemPrefix>
                         <PowerIcon className="h-5 w-5" />
                     </ListItemPrefix>
-                    <NavLink href={route('logout')} method="post" as="button">Log Out</NavLink>
+                    Log Out
                 </ListItem>
+                </NavLink>
             </List>
           </AccordionBody>
         </Accordion>    

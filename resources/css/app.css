@@ -1,3 +1,53 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.transition-opacity {
+    
+    animation: increaseOpacity 0.5s ease-in;
+}
+@keyframes increaseOpacity {
+    from {
+        opacity: 0;
+    } 
+    to {
+        opacity: 1;
+    }
+}
+
+#chat-area div {
+    border-radius: 1rem;
+    width: 80%;
+    padding: 0.5rem;
+    
+}
+#chat-area {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+#chat-area::-webkit-scrollbar {
+    display: none;
+}
+
+#chat-area>.user {
+    background-color: #eeeeee;
+    color: black;
+    text-align: right;
+    margin-left: auto;
+}
+
+#chat-area>.system {
+    background-color: #f5f5f5;
+    color: black;
+}
+#chat-area .next-possible-questions {
+}
+
+#chat-area .next-possible-questions p {
+    background-color: #ffffff;
+    color: #333;
+    padding: 0.50rem 0.50rem 0.50rem 0.50rem;
+    border-radius: 1rem;
+    border: 1px dotted gray;
+}

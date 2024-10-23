@@ -17,9 +17,8 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        if(!User::find(1)) {
+        if(!User::where('email','superadmin@gmail.com')->first()) {
             $user = new User();
-            $user->id = 1;
             $user->name = 'Super Admin';
             $user->email = 'superadmin@gmail.com';
             $user->password = Hash::make(env('SUPERADMINPASS'));

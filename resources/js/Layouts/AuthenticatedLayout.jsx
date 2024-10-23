@@ -1,12 +1,17 @@
 import { useState } from 'react';
-import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import Sidebar from '@/Components/Sidebar';
+import VoiceSquare from '@/Components/Chatbot/VoiceSquare';
+import VoiceControl from '@/Components/Chatbot/VoiceControl';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { Link } from '@inertiajs/react';
 
 export default function Authenticated({ auth, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+    const [voiceControlEnabled, setVoiceControlEnabled] = useState(false);
+
+    const toggleVoiceControl = () => {
+        setVoiceControlEnabled(prevState => !prevState);
+    }
 
     return (
         <div className="min-h-screen bg-gray-100">
@@ -103,6 +108,10 @@ export default function Authenticated({ auth, header, children }) {
             <div className='flex'>
                 <Sidebar></Sidebar>
                 <main className='w-full'>{children}</main>
+                <div className='fixed bottom-0 right-0 '>
+                {voiceControlEnabled?<VoiceControl onClick={toggleVoiceControl}/>:''}
+                    <VoiceSquare onClick={toggleVoiceControl} className="float-right h-12 w-12 hover:cursor-pointer"/>   
+                </div>
             </div>
         </div>
     );
