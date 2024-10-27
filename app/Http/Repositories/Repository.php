@@ -5,13 +5,13 @@ namespace App\Http\Repositories;
 
 abstract class Repository {
 
-    abstract function all();
+    abstract function all(...$params);
 
-    abstract function get();
+    abstract function get($id);
 
-    abstract function save();
+    abstract function save($data);
 
-    abstract function update();
+    abstract function update($id, $data);
 
-    abstract function delete();
+    abstract function delete($id);
 }
