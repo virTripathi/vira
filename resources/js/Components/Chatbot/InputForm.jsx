@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import SendIcon from "../SendIcon";
-import Microphone from "../Microphone";
-import CloseMicrophoneIcon from "../CloseMicrophoneIcon";
+import SendIcon from "../Icons/SendIcon";
+import Microphone from "../Icons/Microphone";
+import CloseMicrophoneIcon from "../Icons/CloseMicrophoneIcon";
 import SpeechRecognition, {
     useSpeechRecognition,
 } from "react-speech-recognition";

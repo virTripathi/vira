@@ -1,10 +1,10 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import SelectInput from '@/Components/SelectInput';
-import DatePicker from '@/Components/DatePicker';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
+import InputError from '@/Components/Inputs/InputError';
+import InputLabel from '@/Components/Inputs/InputLabel';
+import SelectInput from '@/Components/Inputs/SelectInput';
+import DatePicker from '@/Components/Inputs/DatePicker';
+import PrimaryButton from '@/Components/Buttons/PrimaryButton';
+import TextInput from '@/Components/Inputs/TextInput';
 import { XMarkIcon } from '@heroicons/react/24/solid'
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { Transition } from '@headlessui/react';

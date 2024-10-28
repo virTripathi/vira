@@ -9,6 +9,7 @@ module.exports = withMT({
         './resources/views/**/*.blade.php',
         './resources/js/**/*.jsx',
     ],
+    darkMode: 'class',
 
     theme: {
         extend: {
