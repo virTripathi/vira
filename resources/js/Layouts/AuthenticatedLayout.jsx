@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Dropdown from '@/Components/Dropdown';
 import Sidebar from '@/Components/Sidebar';
-import VoiceSquare from '@/Components/Chatbot/VoiceSquare';
+import VoiceSquare from '@/Components/Icons/VoiceSquare';
 import VoiceControl from '@/Components/Chatbot/VoiceControl';
 import { UserCircleIcon } from '@heroicons/react/24/outline';
 

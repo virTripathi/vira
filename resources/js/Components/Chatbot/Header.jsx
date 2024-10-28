@@ -1,4 +1,4 @@
-import CloseIcon from "../CloseIcon";
+import CloseIcon from "../Icons/CloseIcon";
 
 function Header({ onClick }) {
   return (
