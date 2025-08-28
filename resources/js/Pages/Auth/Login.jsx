@@ -1,42 +1,61 @@
-import { useEffect } from 'react';
-import Checkbox from '@/Components/Inputs/Checkbox';
-import GuestLayout from '@/Layouts/GuestLayout';
-import InputError from '@/Components/Inputs/InputError';
-import InputLabel from '@/Components/Inputs/InputLabel';
-import PrimaryButton from '@/Components/Buttons/PrimaryButton';
-import TextInput from '@/Components/Inputs/TextInput';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { useEffect } from "react";
+import Checkbox from "@/Components/Inputs/Checkbox";
+import GuestLayout from "@/Layouts/GuestLayout";
+import InputError from "@/Components/Inputs/InputError";
+import InputLabel from "@/Components/Inputs/InputLabel";
+import PrimaryButton from "@/Components/Buttons/PrimaryButton";
+import TextInput from "@/Components/Inputs/TextInput";
+import { Head, Link, useForm } from "@inertiajs/react";
+import SecondaryButton from "@/Components/Buttons/SecondaryButton";
+import { motion } from "framer-motion";
 
 export default function Login({ status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
-        email: '',
-        password: '',
-        remember: '',
+        email: "",
+        password: "",
+        remember: "",
     });
 
     useEffect(() => {
         return () => {
-            reset('password');
+            reset("password");
         };
     }, []);
 
     const handleOnChange = (event) => {
-        setData(event.target.name, event.target.type === 'checkbox' ? event.target.checked : event.target.value);
+        setData(
+            event.target.name,
+            event.target.type === "checkbox"
+                ? event.target.checked
+                : event.target.value
+        );
     };
 
     const submit = (e) => {
         e.preventDefault();
 
-        post(route('login'));
+        post(route("login"));
     };
 
     return (
         <GuestLayout>
-            <Head title="Log in" />
+            {status && (
+                <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="mb-4 font-medium text-sm text-green-600"
+                >
+                    {status}
+                </motion.div>
+            )}
 
-            {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
-
-            <form onSubmit={submit}>
+            <motion.form
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7 }}
+                onSubmit={submit}
+            >
                 <div>
                     <InputLabel htmlFor="email" value="Email" />
 
@@ -70,28 +89,43 @@ export default function Login({ status, canResetPassword }) {
                     <InputError message={errors.password} className="mt-2" />
                 </div>
 
-                <div className="block mt-4">
+                <div className="flex mt-4 justify-between items-center">
                     <label className="flex items-center">
-                        <Checkbox name="remember" value={data.remember} onChange={handleOnChange} />
-                        <span className="ml-2 text-sm text-gray-600">Remember me</span>
+                        <Checkbox
+                            name="remember"
+                            value={data.remember}
+                            onChange={handleOnChange}
+                        />
+                        <span className="ml-2 text-sm text-gray-600">
+                            Remember me
+                        </span>
                     </label>
-                </div>
-
-                <div className="flex items-center justify-end mt-4">
                     {canResetPassword && (
                         <Link
-                            href={route('password.request')}
+                            href={route("password.request")}
                             className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         >
-                            Forgot your password?
+                            Forgot password?
                         </Link>
                     )}
-
-                    <PrimaryButton className="ml-4" disabled={processing}>
-                        Log in
-                    </PrimaryButton>
                 </div>
-            </form>
+
+                <div className="flex items-center justify-center mt-4">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        className="flex"
+                    >
+                        <SecondaryButton className="ml-4" disabled={processing}>
+                            <Link href={route("register")}>Register</Link>
+                        </SecondaryButton>
+                        <PrimaryButton className="ml-4" disabled={processing}>
+                            Log in
+                        </PrimaryButton>
+                    </motion.div>
+                </div>
+            </motion.form>
         </GuestLayout>
     );
 }

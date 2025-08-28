@@ -4,6 +4,7 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import { SunIcon, MoonIcon } from "@heroicons/react/24/solid";
+import Logo from "../Logo";
  
 export function GuestNavbar({theme, toggleTheme}) {
   const navList = (
@@ -55,13 +56,7 @@ export function GuestNavbar({theme, toggleTheme}) {
   return (
       <Navbar className="bg-transparent sticky top-0 z-10 h-max max-w-full rounded-none px-4 py-2 lg:px-8 lg:py-4 shadow dark:shadow-black dark:border-gray-900">
         <div className="flex items-center justify-between text-blue-gray-900">
-          <Typography
-            as="a"
-            href="#"
-            className="mr-4 cursor-pointer py-1.5 font-medium text-purple-500 text-xl tracking-wide abril-fatface-regular"
-          >
-            VIRA
-          </Typography>
+          <Logo />
           <div className="flex items-center gap-4">
             <div className="mr-4">{navList}</div>
           </div>

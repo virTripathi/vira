@@ -19,7 +19,7 @@ export default function HeroSection({className, features}) {
                         <div className="mt-8 flex flex-wrap justify-center gap-4">
                             <a
                                 className="block w-full rounded-xl bg-purple-600 px-12 py-3 text-sm font-medium text-white shadow hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 focus:outline-none focus:ring active:bg-purple-500 sm:w-auto"
-                                href="#"
+                                href="/login"
                             >
                                 Get Started
                             </a>
