@@ -6,6 +6,7 @@ import HeroSection from '@/Components/Sections/HeroSection';
 import UseCaseSection from '@/Components/Sections/UseCaseSection';
 import PricingSection from '@/Components/Sections/PricingSection';
 import FooterSection from '@/Components/Sections/FooterSection';
+import { motion } from 'framer-motion';
 
 export default function Welcome(props) {
     const [loading, setLoading] = useState(true);
@@ -120,12 +121,46 @@ export default function Welcome(props) {
                 <LoadingPage />
             ) : (
                 <>
-                    <GuestNavbar theme={theme} toggleTheme={toggleTheme}/>
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.1 }}
+                    >
+                        <GuestNavbar theme={theme} toggleTheme={toggleTheme}/>
+                    </motion.div>
                     <Head title="VIRA - Your personal AI Assistant" />
-                    <HeroSection className="min-h-screen" features={features}/>
-                    <UseCaseSection className="min-h-screen bg-gray-200 dark:bg-gray-900" useCases={useCases}/>
-                    <PricingSection className="min-h-screen" />
-                    <FooterSection className=""/>
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.7, delay: 0.2 }}
+                        viewport={{ once: true, amount: 0.2 }}
+                    >
+                        <HeroSection className="min-h-screen" features={features}/>
+                    </motion.div>
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.7, delay: 0.3 }}
+                        viewport={{ once: true, amount: 0.2 }}
+                    >
+                        <UseCaseSection className="min-h-screen bg-gray-200 dark:bg-gray-900" useCases={useCases}/>
+                    </motion.div>
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.7, delay: 0.4 }}
+                        viewport={{ once: true, amount: 0.2 }}
+                    >
+                        <PricingSection className="min-h-screen" />
+                    </motion.div>
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.7, delay: 0.5 }}
+                        viewport={{ once: true, amount: 0.2 }}
+                    >
+                        <FooterSection className=""/>
+                    </motion.div>
                 </>
             )}
         </>
