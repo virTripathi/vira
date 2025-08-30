@@ -19,8 +19,6 @@ return new class extends Migration
             $table->text('answer');
             $table->integer('version')->default(1);
             $table->timestamps();
-            $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
-            $table->foreignId('updated_by')->constrained('users')->onDelete('cascade');
         });
     }
 

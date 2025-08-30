@@ -13,12 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('chat_questions', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('chat_id')->nullable()->constrained('chats')->onDelete('cascade');
-            $table->text('question');
-            $table->boolean('is_default')->default(false);
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('google_access_token')->nullable();
         });
     }
 
@@ -29,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('chat_questions');
+        Schema::table('users', function (Blueprint $table) {
+            //
+        });
     }
 };
