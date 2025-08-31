@@ -5,6 +5,7 @@ use App\Http\Controllers\TaskManagement\TaskController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\Calendars\GoogleCalendarController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,5 +43,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+Route::get('/google/redirect', [GoogleCalendarController::class, 'redirect'])->name('google.redirect');
+Route::get('/google/callback', [GoogleCalendarController::class, 'callback'])->name('google.callback');
+Route::get('auth/google/callback', [\App\Http\Controllers\Auth\GoogleController::class, 'callback']);
 
 require __DIR__.'/auth.php';

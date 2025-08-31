@@ -7,6 +7,7 @@ import PrimaryButton from "@/Components/Buttons/PrimaryButton";
 import TextInput from "@/Components/Inputs/TextInput";
 import { Head, Link, useForm } from "@inertiajs/react";
 import SecondaryButton from "@/Components/Buttons/SecondaryButton";
+import GoogleButton from "@/Components/Buttons/GoogleButton";
 import { motion } from "framer-motion";
 
 export default function Login({ status, canResetPassword }) {
@@ -35,6 +36,11 @@ export default function Login({ status, canResetPassword }) {
         e.preventDefault();
 
         post(route("login"));
+    };
+
+    const handleGoogleLogin = () => {
+        // Redirect to Google OAuth route
+        window.location.href = route("google.redirect");
     };
 
     return (
@@ -110,7 +116,29 @@ export default function Login({ status, canResetPassword }) {
                     )}
                 </div>
 
-                <div className="flex items-center justify-center mt-4">
+                <div className="mt-6">
+                    <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                            <div className="w-full border-t border-gray-300" />
+                        </div>
+                        <div className="relative flex justify-center text-sm">
+                            <span className="px-2 bg-white text-gray-500">Or continue with</span>
+                        </div>
+                    </div>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.3 }}
+                        className="mt-6"
+                    >
+                        <GoogleButton onClick={handleGoogleLogin} disabled={processing}>
+                            Continue with Google
+                        </GoogleButton>
+                    </motion.div>
+                </div>
+
+                <div className="flex items-center justify-center mt-6">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
