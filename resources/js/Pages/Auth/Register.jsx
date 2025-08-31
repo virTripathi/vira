@@ -4,7 +4,9 @@ import InputError from '@/Components/Inputs/InputError';
 import InputLabel from '@/Components/Inputs/InputLabel';
 import PrimaryButton from '@/Components/Buttons/PrimaryButton';
 import TextInput from '@/Components/Inputs/TextInput';
+import GoogleButton from '@/Components/Buttons/GoogleButton';
 import { Head, Link, useForm } from '@inertiajs/react';
+import { motion } from 'framer-motion';
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -30,11 +32,21 @@ export default function Register() {
         post(route('register'));
     };
 
+    const handleGoogleSignup = () => {
+        // Redirect to Google OAuth route
+        window.location.href = route("google.redirect");
+    };
+
     return (
         <GuestLayout>
             <Head title="Register" />
 
-            <form onSubmit={submit}>
+            <motion.form
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7 }}
+                onSubmit={submit}
+            >
                 <div>
                     <InputLabel htmlFor="name" value="Name" />
 
@@ -103,7 +115,29 @@ export default function Register() {
                     <InputError message={errors.password_confirmation} className="mt-2" />
                 </div>
 
-                <div className="flex items-center justify-end mt-4">
+                <div className="mt-6">
+                    <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                            <div className="w-full border-t border-gray-300" />
+                        </div>
+                        <div className="relative flex justify-center text-sm">
+                            <span className="px-2 bg-white text-gray-500">Or continue with</span>
+                        </div>
+                    </div>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.3 }}
+                        className="mt-6"
+                    >
+                        <GoogleButton onClick={handleGoogleSignup} disabled={processing}>
+                            Continue with Google
+                        </GoogleButton>
+                    </motion.div>
+                </div>
+
+                <div className="flex items-center justify-end mt-6">
                     <Link
                         href={route('login')}
                         className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -115,7 +149,7 @@ export default function Register() {
                         Register
                     </PrimaryButton>
                 </div>
-            </form>
+            </motion.form>
         </GuestLayout>
     );
 }
