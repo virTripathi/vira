@@ -7,6 +7,7 @@ use App\Models\Chatbot\ChatQuestion;
 use App\Models\Chatbot\ChatQuestionAnswer;
 use App\Jobs\GenerateAiAnswerJob;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ChatService {
 
@@ -37,6 +38,7 @@ class ChatService {
             'answer' => '',
             'status' => 'processing'
         ]);
+        Log::info('New chat question created: '.$chatQuestion->id);
         GenerateAiAnswerJob::dispatch($chatQuestion);
         return $chatQuestion;
     }

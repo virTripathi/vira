@@ -5,7 +5,6 @@ namespace App\Jobs;
 use App\Events\AnswerGeneratedEvent;
 use App\Http\Repositories\RepositoryBuilder;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -27,8 +26,6 @@ class GenerateAiAnswerJob implements ShouldQueue
     public function __construct($chatQuestion)
     {
         $this->chatQuestion = $chatQuestion;
-        $repositoryBuilder = new RepositoryBuilder();
-        $this->aiModel = $repositoryBuilder->build('AiModels\GoogleAIStudio');
     }
 
     /**
@@ -38,43 +35,47 @@ class GenerateAiAnswerJob implements ShouldQueue
      */
     public function handle()
     {
-        dispatch(new LogJob('GenerateAiAnswerJob.handle', ['chatQuestion' => $this->chatQuestion]));
+        $repositoryBuilder = new RepositoryBuilder();
+        $aiModel = $repositoryBuilder->build('AiModels\GoogleAIStudio');
+        $chatQuestion = $this->chatQuestion->fresh();
+        LogJob::dispatch('GenerateAiAnswerJob.handle', ['chatQuestion' => $this->chatQuestion]);
         try {
-            $response = $this->aiModel->ask($this->chatQuestion->question);
+            $response = $aiModel->ask($chatQuestion->question, $chatQuestion->chat->user);
 
             switch($response['type']) {
                 case 'text':
-                    $this->chatQuestion->answer = $response['message'];
+                    $this->chatQuestion->answer()->create([
+                        'answer' => $response['data']
+                    ]);
                     break;
                 case 'function':
-                    $functionName = $response['name'];
-                    $functionArgs = $response['args'] ?? [];
+                    LogJob::dispatch('Function call response: '.json_encode($response));
+                    $functionName = $response['data']['name'];
+                    $functionArgs = $response['data']['args'] ?? [];
                     $responseText = config('ai-studio.actions.' . $functionName . '.response_text');
                     $responseText = preg_replace_callback('/\{(\w+)\}/', function ($matches) use ($functionArgs) {
                         return $functionArgs[$matches[1]] ?? $matches[0];
                     }, $responseText);
-                    $this->chatQuestion->answer = $responseText;
+                    $this->chatQuestion->answer()->create([
+                        'answer' => $responseText
+                    ]);
                     break;
                 default:
-                    $this->chatQuestion->status = 'failed';
-
-                
+                    $this->chatQuestion->status = 'failed';                
             }
-
-            // Fire event with retry mechanism
-            AnswerGeneratedEvent::dispatchWithRetry($this->chatQuestion->answer);
+            $this->chatQuestion->saveQuietly();
+            LogJob::dispatch('GenerateAiAnswerJob.handle.completed', ['chatQuestion' => $this->chatQuestion]);
+            AnswerGeneratedEvent::dispatchWithRetry($this->chatQuestion->answer, 3, $this->chatQuestion->chat->user_id);
 
         } catch (\Exception $e) {
-            dispatch(new LogJob('GenerateAiAnswerJob.handle.error', ['exception' => $e]));
+            LogJob::dispatch('GenerateAiAnswerJob.handle.error', $e, 'error');
             // Handle exception
         }
 
     }
 
-    public function failed(\Exception $exception)
+    public function failed($error)
     {
-        // Take action on job failure, e.g. log or notify
-        \Log::error('GenerateAiAnswerJob failed: ' . $exception->getMessage());
-        // ...additional failure handling...
+        LogJob::dispatch('GenerateAiAnswerJob.failed', $error, 'error');
     }
 }

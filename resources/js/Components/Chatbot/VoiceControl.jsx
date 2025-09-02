@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePage } from '@inertiajs/react';
 import Header from "./Header";
 import ChatArea from "./ChatArea";
 import InputForm from "./InputForm";
@@ -51,15 +52,15 @@ export default function VoiceControl({ className, onClick }) {
         }
     };
 
-    // callback for ChatArea when new answer event is received
     const handleNewAnswer = (data) => {
-        setChats((prev) => [...prev, { user: "system", message: data.answer }]);
+        console.log(data.answer);
+        setChats((prev) => [...prev, { user: "system", message: data.answer.answer }]);
         setIsAnswerPending(false);
         setInputDisabled(false);
     };
 
-    // get userId from backend (Laravel injects it into window.Laravel)
-    const userId = window.Laravel?.user?.id;
+    const { auth } = usePage().props;
+    const userId = auth?.user?.id;
 
     return (
         <div className={`transition-opacity ${className}`}>

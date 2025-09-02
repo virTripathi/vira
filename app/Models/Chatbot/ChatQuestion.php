@@ -24,9 +24,9 @@ class ChatQuestion extends MainModel
         return $this->belongsTo(Chat::class);
     }
 
-    public function answers()
+    public function answer()
     {
-        return $this->hasMany(ChatQuestionAnswer::class);
+        return $this->hasOne(ChatQuestionAnswer::class, 'question_id', 'id');
     }
 
     public function creator()

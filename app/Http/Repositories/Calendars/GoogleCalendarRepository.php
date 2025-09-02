@@ -4,12 +4,14 @@ namespace App\Http\Repositories\Calendars;
 
 use Google\Client;
 use Google\Service\Calendar;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class GoogleCalendarRepository
 {
     private $client;
 
-    public function __construct()
+    public function __construct($userGoogleAccessToken)
     {
         $this->client = new Client();
         $this->client->setClientId(config('services.google.client_id'));
@@ -18,6 +20,7 @@ class GoogleCalendarRepository
         $this->client->addScope(Calendar::CALENDAR);
         $this->client->setAccessType('offline');
         $this->client->setPrompt('consent');
+        $this->client->setAccessToken($userGoogleAccessToken);
     }
 
     public function getAuthUrl()
@@ -45,7 +48,12 @@ class GoogleCalendarRepository
             'end' => ['dateTime' => $endDateTime, 'timeZone' => 'Asia/Kolkata'],
             'attendees' => array_map(fn($email) => ['email' => $email], $attendeesEmails)
         ]);
-
-        return $service->events->insert('primary', $event);
+        $service->events->insert('primary', $event);
+        $service->events->insert(
+            'primary',
+            $event,
+            ['sendUpdates' => 'all']
+        );
+        return 1;
     }
 }

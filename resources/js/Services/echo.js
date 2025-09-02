@@ -1,14 +1,14 @@
 import Echo from 'laravel-echo';
 
 const echo = new Echo({
-    broadcaster: 'pusher',
-    key: import.meta.env.VITE_PUSHER_APP_KEY || 'local',
-    wsHost: window.location.hostname,
-    wsPort: 6001,
+    broadcaster: 'reverb',
+    key: import.meta.env.VITE_REVERB_APP_KEY || 'local',
+    // cluster: import.meta.env.VITE_REVERB_APP_CLUSTER,
+    wsHost: import.meta.env.VITE_REVERB_HOST,
+    wsPort: import.meta.env.VITE_REVERB_PORT || 8080,
     forceTLS: false,
     disableStats: true,
-    enabledTransports: ['ws', 'wss'],
-    authEndpoint: '/broadcasting/auth',
+    enabledTransports: ['ws', 'wss']
 });
 
 export default echo;

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Exception;
 
 class LogJob implements ShouldQueue
 {
@@ -15,16 +16,17 @@ class LogJob implements ShouldQueue
 
     protected $message;
     protected $context;
+    protected $type;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($message, $context = [], $type = 'info')
+    public function __construct($message, array|Exception $context = [], $type = 'info')
     {
         $this->message = $message;
-        $this->context = $context;
+        $this->context = $this->buildContext($context);
         $this->type = $type;
     }
 
@@ -35,6 +37,22 @@ class LogJob implements ShouldQueue
      */
     public function handle()
     {
-        Log::$type($this->message, $this->context);
+        Log::{$this->type}($this->message, $this->context);
+    }
+
+    public function buildContext($context): array
+    {
+        if ($context instanceof Exception) {
+            return [
+                'exception' => [
+                    'message' => $context->getMessage(),
+                    'code' => $context->getCode(),
+                    'file' => $context->getFile(),
+                    'line' => $context->getLine(),
+                ],
+            ];
+        }
+
+        return $context;
     }
 }

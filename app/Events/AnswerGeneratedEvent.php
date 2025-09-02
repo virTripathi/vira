@@ -2,11 +2,13 @@
 
 namespace App\Events;
 
+use App\Jobs\LogJob;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class AnswerGeneratedEvent implements ShouldBroadcast
 {
@@ -27,6 +29,7 @@ class AnswerGeneratedEvent implements ShouldBroadcast
      */
     public function __construct($answer, $retries = 0, $userId = null)
     {
+        LogJob::dispatch('AnswerGeneratedEvent: ' . $answer);
         $this->answer = $answer;
         $this->retries = $retries;
         $this->userId = $userId;
@@ -64,8 +67,16 @@ class AnswerGeneratedEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
+            
         // Broadcast on a private channel for the user
-        return new PrivateChannel('user.' . $this->userId);
+        $privateChannel = new PrivateChannel('user.' . $this->userId);
+        Log::info('Broadcasting AnswerGeneratedEvent on channel: user.' . $this->userId,[
+            'channel' => $privateChannel,
+        ]);
+        LogJob::dispatch('Broadcasting AnswerGeneratedEvent', [
+            'channel' => $privateChannel,
+        ]);
+        return $privateChannel;
     }
 
     /**
@@ -75,9 +86,19 @@ class AnswerGeneratedEvent implements ShouldBroadcast
      */
     public function broadcastWith()
     {
+        LogJob::dispatch('Broadcasting AnswerGeneratedEvent with data: ',[
+            'answer' => $this->answer,
+            'retries' => $this->retries,
+        ]);
         return [
             'answer' => $this->answer,
             'retries' => $this->retries,
         ];
     }
+
+    public function broadcastAs()
+    {
+        return 'AnswerGeneratedEvent';
+    }
+
 }

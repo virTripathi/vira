@@ -4,9 +4,10 @@ namespace App\Http\Repositories\AiModels;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use App\Http\Controllers\XyzController;
+use App\Http\Repositories\Calendars\GoogleCalendarRepository;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class GoogleAIStudioRepository
 {
@@ -29,7 +30,7 @@ class GoogleAIStudioRepository
      * @param string $question
      * @return array|null
      */
-    public function ask(string $question): ?array
+    public function ask(string $question, $user): ?array
     {
         try {
             $payload = [
@@ -37,6 +38,9 @@ class GoogleAIStudioRepository
                     'role' => 'user',
                     'parts' => [
                         ['text' => config('ai-studio.core_prompt')],
+                        ['text' => 'CurrentDateAndTime: ' . Carbon::now()->toISOString()],
+                        ['text' => 'Current week day: ' . Carbon::now()->format('l')],
+                        ['text' => 'Parse relative dates and times'],
                         ['text' => $question]
                     ],
                 ]],
@@ -59,11 +63,11 @@ class GoogleAIStudioRepository
 
             // Try functionCall first
             $functionCall = $this->handleFunctionCall($responseData);
-
             if ($functionCall) {
+                $this->executeFunctionCall($functionCall, $user);
                 return [
                     'type' => 'function',
-                    'data' => $this->executeFunctionCall($functionCall),
+                    'data' => $functionCall,
                 ];
             }
 
@@ -173,15 +177,17 @@ class GoogleAIStudioRepository
         return null;
     }
 
-    private function executeFunctionCall(array $functionCall)
+    private function executeFunctionCall(array $functionCall, $user)
     {
         $name = $functionCall['name'] ?? '';
         $args = $functionCall['args'] ?? [];
 
         switch ($name) {
             case 'schedule_meeting':
-                $controller = app(XyzController::class);
-                return $controller->scheduleMeeting(new Request($args));
+                $startDateTime = Carbon::parse("{$args['date']} {$args['time']}");
+                $endDateTime = $startDateTime->copy()->addMinutes($args['duration_minutes'] ?? 30);
+                $repository = new GoogleCalendarRepository($user->google_access_token);
+                return $repository->createEvent($args["topic"],$startDateTime,$endDateTime,$args["attendees"]);
             default:
                 throw new \Exception("Unknown function: {$name}");
         }

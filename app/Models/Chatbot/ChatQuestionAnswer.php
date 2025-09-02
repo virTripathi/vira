@@ -21,7 +21,7 @@ class ChatQuestionAnswer extends MainModel
 
     public function question()
     {
-        return $this->belongsTo(ChatQuestion::class);
+        return $this->belongsTo(ChatQuestion::class, 'question_id');
     }
 
     public function creator()
