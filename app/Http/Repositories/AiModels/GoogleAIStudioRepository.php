@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\Log;
 use App\Http\Repositories\Calendars\GoogleCalendarRepository;
+use App\Http\Repositories\WeatherRepository;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -64,10 +65,12 @@ class GoogleAIStudioRepository
             // Try functionCall first
             $functionCall = $this->handleFunctionCall($responseData);
             if ($functionCall) {
-                $this->executeFunctionCall($functionCall, $user);
+                $data = $this->executeFunctionCall($functionCall, $user);
+                Log::info('data', $data);
+                $responseText = $this->buildTextResponse($functionCall['name'],$data);
                 return [
                     'type' => 'function',
-                    'data' => $functionCall,
+                    'data' => $responseText,
                 ];
             }
 
@@ -187,9 +190,52 @@ class GoogleAIStudioRepository
                 $startDateTime = Carbon::parse("{$args['date']} {$args['time']}");
                 $endDateTime = $startDateTime->copy()->addMinutes($args['duration_minutes'] ?? 30);
                 $repository = new GoogleCalendarRepository($user->google_access_token);
-                return $repository->createEvent($args["topic"],$startDateTime,$endDateTime,$args["attendees"]);
+                return $repository->createEvent($args["topic"], $startDateTime, $endDateTime, $args["attendees"]);
+            case 'weather_info':
+                $repository = new WeatherRepository();
+                return $repository->getCurrentWeather($args["location"]);
             default:
                 throw new \Exception("Unknown function: {$name}");
         }
+    }
+
+    protected function buildTextResponse(string $functionName, array $responseData)
+    {
+        $configs = [];
+
+        foreach($this->actions as $actionName => $action) {
+            $configs[$actionName] = [
+                'response_text' => $action['response_text'],
+            ];
+        }
+        Log::info('configs', ['configs' => $configs]);
+
+        if (!isset($configs[$functionName])) {
+            return json_encode($responseData);
+        }
+
+        $template = $configs[$functionName]['response_text'];
+
+        $flattened = $this->flattenArray($responseData);
+
+        $responseText = preg_replace_callback('/\{(\w+)\}/', function ($matches) use ($flattened) {
+            $key = $matches[1];
+            return $flattened[$key] ?? $matches[0];
+        }, $template);
+        Log::info('response_text', ['response_text' => $responseText]);
+        return $responseText;
+    }
+
+    protected function flattenArray(array $data, string $prefix = ''): array
+    {
+        $result = [];
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $result += $this->flattenArray($value, $prefix);
+            } else {
+                $result[$key] = $value;
+            }
+        }
+        return $result;
     }
 }

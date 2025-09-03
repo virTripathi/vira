@@ -48,5 +48,22 @@ return [
             'response_text' => 'Meeting scheduled successfully'
         ],
 
+        'weather_info' => [
+            'description' => 'Fetches current weather information for a specific location.',
+            'examples' => [
+                'What\'s the weather like in New York?',
+                'Get me the current weather in London'
+            ],
+            'arguments' => [
+                ['name' => 'location', 'type' => 'string', 'required' => true],
+            ],
+            'returns' => 'object',
+            'side_effects' => ['fetches weather data'],
+            'async' => true,
+            'integration' => 'weather_api',
+            'auth_required' => false,
+            'response_text' => "The weather in {name}, {country} is {temp_c}°C with {text} condition. It feels like {feelslike_c}°C and humidity is {humidity}%.",
+        ]
+
     ],
 ];
