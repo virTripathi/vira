@@ -2,10 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use App\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class RedirectIfAuthenticated
 {
@@ -23,7 +23,14 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
+                $user = Auth::guard($guard)->user();
+                if ($user && $user->roles && $user->roles->isNotEmpty()) {
+                    $userRole = strtolower(str_replace(' ', '-', $user->roles->first()->title));
+                    Log::info('userRole', ['role' => $userRole]);
+                    return redirectToUserDashboard($userRole);
+                }
+                Log::info('before login');
+                return redirect('/login');
             }
         }
 

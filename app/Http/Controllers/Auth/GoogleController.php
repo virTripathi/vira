@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Main\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -71,8 +72,10 @@ class GoogleController extends Controller
                 'email' => $googleUser['email'],
                 'password' => Hash::make(Str::random(16)),
                 'email_verified_at' => now(),
-                'profile_picture' => $googleUser['picture'] ?? null,
+                'profile_picture' => $googleUser['picture'] ?? null
             ]);
+            $user->roles()->attach(Role::generalUser()->id);
+
         }
 
         // Store Google tokens for calendar access
