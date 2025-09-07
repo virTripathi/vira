@@ -81,13 +81,13 @@ export default function InputForm({ onSubmit, disabled }) {
     };
 
     return (
-        <form className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96 p-4">
-            <div className="mb-1 flex gap-2 justify-center items-center">
-                <div className="w-full max-w-sm min-w-[200px]">
+        <form className="mt-8 mb-2 p-4">
+            <div className="mb-1 flex gap-2 justify-center items-center p-2 border-2 rounded-full">
+                <div className="w-full min-w-[200px]">
                     <div className="relative">
                         <input
                             type="text"
-                            className="w-full bg-transparent placeholder:text-gray-400 text-gray-700 text-sm border border-gray-200 rounded-md pl-3 pr-10 py-2 transition duration-300 ease focus:outline-none focus:border-gray-400 hover:border-gray-300 shadow-sm focus:shadow"
+                            className="w-full bg-transparent placeholder:text-gray-400 text-gray-700 text-sm pl-3 pr-10 py-2 transition duration-300 ease focus:outline-none border-none focus:outline-none focus:ring-0"
                             placeholder="Enter your text"
                             readOnly={disabled}
                             value={inputValue}

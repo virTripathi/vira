@@ -10,7 +10,7 @@ export default function TaskForm(props, className = "max-w-xl") {
         <AuthenticatedLayout auth={props.auth} errors={props.errors}>
             <section className={className}>
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                    <div className="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+                    <div className="p-4 sm:p-8 shadow sm:rounded-lg">
                         <div className='flex justify-between items-center'>
                             <h2 className="text-lg font-medium text-gray-900">
                                 {'View Task: '+task.title}

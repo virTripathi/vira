@@ -1,8 +1,8 @@
-<p align="center">Mini Jarvis</p>
+<p align="center">VIRA</p>
 
 ## About Application
 
-Mini Jarvis is a advanced task management platform built on top of Laravel and React JS where you can create and have a log of your tasks:
+VIRA is a advanced task management platform built on top of Laravel and React JS where you can create and have a log of your tasks:
 
 ## Running Application
 

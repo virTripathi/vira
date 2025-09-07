@@ -1,7 +1,7 @@
 import React from "react";
 import useChatListener from "@/hooks/useChatListener";
 
-function ChatArea({ chats, defaultQuestions, addQuestion, isAnswerPending, userId, onNewAnswer }) {
+function ChatArea({className, chats, defaultQuestions, addQuestion, isAnswerPending, userId, onNewAnswer }) {
     useChatListener(userId, (data) => {
         onNewAnswer?.(data); 
     });
@@ -9,15 +9,15 @@ function ChatArea({ chats, defaultQuestions, addQuestion, isAnswerPending, userI
     return (
         <div
             id="chat-area"
-            className="chat-area h-60 min-h-60 overflow-y-auto w-inherit max-w-96"
+            className={className}
         >
             {chats.map((chat, index) =>
                 chat.user === "system" ? (
-                    <div key={index} className="system ms-2 me-2 mt-4">
+                    <div key={index} className="system ms-2 me-2 mt-4 rounded-[18px] px-4 py-1.5 data-[multiline]:py-3">
                         {chat.message}
                     </div>
                 ) : (
-                    <div key={index} className="user ms-2 me-2 mt-4">
+                    <div key={index} className="w-fit user ms-2 me-2 mt-4 dark:bg-gray-900 bg-gray-100 dark:text-white text-black rounded-[18px] px-4 py-1.5 data-[multiline]:py-3">
                         {chat.message}
                     </div>
                 )
