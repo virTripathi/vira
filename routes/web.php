@@ -27,13 +27,20 @@ Route::get('/', function () {
     ]);
 });
 
-Route::middleware(['auth', 'verified', 'authorize:admin'])->group(function() {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::middleware('authorize:admin')->group(function () {
+        Route::get('/dashboard', function () {
+            return Inertia::render('Dashboard');
+        })->name('dashboard');
 
-    Route::resource('tasks', TaskController::class);
+        Route::resource('tasks', TaskController::class);
+    });
 
+    Route::middleware('authorize:general-user')->group(function() {
+        Route::get('/general-user-dashboard', function () {
+            return Inertia::render('GeneralUserDashboard');
+        })->name('general-user.dashboard');
+    });
 });
 
 
@@ -41,11 +48,11 @@ Route::middleware(['auth', 'verified', 'authorize:admin'])->group(function() {
 Route::middleware(['auth', 'authorize:user'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');    
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/calendar-event', [GoogleCalendarController::class, 'createEvent'])->name('calendar.event');
 });
 Route::get('/google/redirect', [GoogleCalendarController::class, 'redirect'])->name('google.redirect');
 Route::get('/google/callback', [GoogleCalendarController::class, 'callback'])->name('google.callback');
 Route::get('auth/google/callback', [\App\Http\Controllers\Auth\GoogleController::class, 'callback']);
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
