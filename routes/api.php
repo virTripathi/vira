@@ -20,8 +20,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:sanctum')->prefix('v1')->group(function() {
-    Route::get('/chats', [\App\Http\Controllers\Chatbot\ChatController::class, 'index']);
-    Route::post('/chats', [\App\Http\Controllers\Chatbot\ChatController::class, 'store']);
-    Route::put('/chats/{id}', [\App\Http\Controllers\Chatbot\ChatController::class, 'update']);
-    Route::delete('/chats/{id}', [\App\Http\Controllers\Chatbot\ChatController::class, 'delete']);
+    Route::get('/chats', [\App\Http\Controllers\Chatbot\ChatController::class, 'index'])->name('chats.index');
+    Route::post('/chats', [\App\Http\Controllers\Chatbot\ChatController::class, 'store'])->name('chats.store');
+    Route::put('/chats/{id}', [\App\Http\Controllers\Chatbot\ChatController::class, 'update'])->name('chats.update');
+    Route::delete('/chats/{id}', [\App\Http\Controllers\Chatbot\ChatController::class, 'delete'])->name('chats.delete');
+    Route::get('sidebar',[App\Http\Controllers\Main\SidebarController::class,'index']);
 });

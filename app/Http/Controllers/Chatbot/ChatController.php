@@ -7,32 +7,57 @@ use App\Http\Repositories\RepositoryBuilder;
 use App\Http\Services\ChatService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 
 class ChatController extends Controller
 {
 
     private $chatService;
-    function __construct(ChatService $chatService) {
+    function __construct(ChatService $chatService)
+    {
         $this->chatService = $chatService;
     }
-    
-    public function index() {
-        return $this->chatService->all();
+
+    public function index()
+    {
+        return response()->json($this->chatService->all());
     }
 
-    public function store(Request $request) {
+    public function show(Request $request, $id)
+    {
+        $chat = $this->chatService->get($id);
+
+        return Inertia::render('Chatbot/UserChatPage', [
+            'chat' => [
+                'id' => $chat->id,
+                'title' => $chat->title,
+            ],
+            'questions' => $chat->questions->map(function ($q) {
+                return [
+                    'id' => $q->id,
+                    'question' => $q->question,
+                    'answer' => $q->answer ? $q->answer->text : null,
+                ];
+            }),
+        ]);
+    }
+
+    public function store(Request $request)
+    {
         Log::info("Store called", $request->all());
         $data = $request->all();
         return $this->chatService->save($data);
     }
 
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         Log::info("Update called");
         $data = $request->all();
         return $this->chatService->update($id, $data);
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         Log::info("Delete called");
         return $this->chatService->delete($id);
     }

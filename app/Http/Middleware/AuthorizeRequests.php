@@ -30,8 +30,6 @@ class AuthorizeRequests
             if ($request->routeIs($userRole . '.dashboard') || $request->routeIs('dashboard')) {
                 return $next($request);
             }
-
-            return redirectToUserDashboard($userRole);
         }
 
         return $next($request);
