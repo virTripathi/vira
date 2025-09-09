@@ -2,11 +2,11 @@ import InputForm from "./InputForm";
 import ChatArea from "./ChatArea";
 import { useChatManager } from "@/hooks/useChatManager";
 
-export default function UserChatArea({ userId, initialChats, defaultQuestions = [], className }) {
+export default function UserChatArea({ chatId, userId, initialChats, defaultQuestions = [], className }) {
   const {
     chats, questions, isAnswerPending, inputDisabled,
     handleInput, addQuestion, handleNewAnswer
-  } = useChatManager(userId, initialChats, defaultQuestions);
+  } = useChatManager(chatId, userId, initialChats, defaultQuestions);
 
   return (
     <div className={className}>

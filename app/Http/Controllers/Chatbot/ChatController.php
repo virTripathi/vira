@@ -27,7 +27,7 @@ class ChatController extends Controller
     {
         $chat = $this->chatService->get($id);
 
-        return Inertia::render('Chatbot/UserChatPage', [
+        return Inertia::render('UserChatPage', [
             'chat' => [
                 'id' => $chat->id,
                 'title' => $chat->title,
@@ -36,7 +36,7 @@ class ChatController extends Controller
                 return [
                     'id' => $q->id,
                     'question' => $q->question,
-                    'answer' => $q->answer ? $q->answer->text : null,
+                    'answer' => $q->latestAnswer ? $q->latestAnswer->answer : null,
                 ];
             }),
         ]);
@@ -60,5 +60,12 @@ class ChatController extends Controller
     {
         Log::info("Delete called");
         return $this->chatService->delete($id);
+    }
+
+    public function storeQuestion($chatId, Request $request) {
+        $request->validate([
+            'question' => 'string'
+        ]);
+        return $this->chatService->storeQuestion($chatId, $request->all());
     }
 }

@@ -1,13 +1,13 @@
 import React from "react";
 
-function ChatArea({ className, chats, questions, addQuestion, isAnswerPending }) {
+export default function ChatArea({ className, chats, questions, addQuestion, isAnswerPending }) {
     return (
         <div id="chat-area" className={className}>
             {chats.map((chat, index) =>
                 chat.user === "system" ? (
                     <div
                         key={index}
-                        className="system ms-2 me-2 mt-4 rounded-[18px] px-4 py-1.5"
+                        className="system ms-2 me-2 mt-4 rounded-[18px] px-4 py-1.5 text-gray-900 dark:text-white"
                     >
                         {chat.message}
                     </div>
@@ -31,7 +31,6 @@ function ChatArea({ className, chats, questions, addQuestion, isAnswerPending })
                 </div>
             )}
 
-            {/* Only show suggested questions if any */}
             {questions.length > 0 && (
                 <section className="ms-2 me-2 mt-2 next-possible-questions flex max-w-96 flex-wrap gap-1">
                     {questions.map((q) => (
@@ -48,5 +47,3 @@ function ChatArea({ className, chats, questions, addQuestion, isAnswerPending })
         </div>
     );
 }
-
-export default ChatArea;

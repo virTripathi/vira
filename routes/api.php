@@ -25,4 +25,5 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function() {
     Route::put('/chats/{id}', [\App\Http\Controllers\Chatbot\ChatController::class, 'update'])->name('chats.update');
     Route::delete('/chats/{id}', [\App\Http\Controllers\Chatbot\ChatController::class, 'delete'])->name('chats.delete');
     Route::get('sidebar',[App\Http\Controllers\Main\SidebarController::class,'index']);
+    Route::post('/chats/{chatId}/question', [\App\Http\Controllers\Chatbot\ChatController::class, 'storeQuestion'])->name('chats.storeMessage');
 });

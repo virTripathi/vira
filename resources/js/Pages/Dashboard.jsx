@@ -1,10 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import { useTheme } from '../contexts/themeContext';
 
 export default function Dashboard(props) {
-
-    const { theme, toggleTheme } = useTheme();
 
     return (
         <AuthenticatedLayout

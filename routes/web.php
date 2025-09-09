@@ -38,7 +38,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::middleware('authorize:general-user')->group(function() {
         Route::get('/general-user-dashboard', function () {
-            return Inertia::render('GeneralUserDashboard');
+            return Inertia::render('UserChatPage');
         })->name('general-user.dashboard');
     });
 });

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import useChatListener from "./useChatListener";
+import axios from "axios";
 
-export function useChatManager(userId, initialChats = null, defaultQuestions = []) {
+export function useChatManager(chatId, userId, initialChats = null, defaultQuestions = []) {
   const [chats, setChats] = useState(
     initialChats?.length
       ? initialChats
@@ -11,16 +12,26 @@ export function useChatManager(userId, initialChats = null, defaultQuestions = [
   const [isAnswerPending, setIsAnswerPending] = useState(false);
   const [inputDisabled, setInputDisabled] = useState(false);
 
-  const handleInput = async (inputString, onMessageSend) => {
-    setChats((prev) => [...prev, { user: "user", message: inputString }]);
-
-    if (onMessageSend) {
-      await onMessageSend(inputString, { setChats, setIsAnswerPending, setInputDisabled });
+  const onQuestionSend = async (inputString, { setChats, setIsAnswerPending, setInputDisabled }) => {
+    try {
+      await axios.post(`/api/v1/chats/${chatId}/question`, {
+        question: inputString,
+      });
+    } catch (error) {
+      console.error("❌ Failed to send message:", error);
+      setChats((prev) => [...prev, { user: "system", message: "⚠️ Failed to send message" }]);
+      setIsAnswerPending(false);
+      setInputDisabled(false);
     }
+  };
+
+  const handleInput = async (inputString) => {
+    setChats((prev) => [...prev, { user: "user", message: inputString }]);
 
     setQuestions([]);
     setInputDisabled(true);
     setIsAnswerPending(true);
+    await onQuestionSend(inputString, { setChats, setIsAnswerPending, setInputDisabled });
   };
 
   const addQuestion = (id) => {

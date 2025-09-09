@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Events\AnswerGeneratedEvent;
 use App\Models\Chatbot\Chat;
 use App\Models\Chatbot\ChatQuestion;
 use App\Models\Chatbot\ChatQuestionAnswer;
@@ -21,7 +22,7 @@ class ChatService
 
     public function get($id)
     {
-        $chat = Chat::with(['questions.answer', 'user'])->findOrFail($id);
+        $chat = Chat::with(['questions.latestAnswer', 'user'])->findOrFail($id);
 
         if ($chat->user->id !== Auth::id()) {
             abort(403, 'Unauthorized');
@@ -60,5 +61,25 @@ class ChatService
     {
         $chatQuestionAnswer = ChatQuestionAnswer::where('question_id', $questionId)->first();
         return $chatQuestionAnswer ? $chatQuestionAnswer->answer : null;
+    }
+
+    public function storeQuestion($chatId, $question) {
+        $chat = Chat::find($chatId);
+        $existingQuestion = ChatQuestion::whereRaw('LOWER(question) = ?', [strtolower($question['question'])])->first();
+        if($existingQuestion) {
+            $answer = $existingQuestion->latestAnswer->answer;
+            AnswerGeneratedEvent::dispatchWithRetry($answer, 3, $chat->user_id);
+            return;
+        }
+
+        $chatQuestion = ChatQuestion::create([
+            'chat_id' => $chat->id,
+            'question' => $question['question'],
+            'answer' => '',
+            'status' => 'processing'
+        ]);
+        Log::info('New chat question created: ' . $chatQuestion->id);
+        GenerateAiAnswerJob::dispatch($chatQuestion);
+        return $chatQuestion;
     }
 }

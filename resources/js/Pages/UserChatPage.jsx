@@ -6,19 +6,19 @@ export default function UserChatPage({ auth, errors, chat, questions }) {
 
     const initialChats = questions?.length
         ? questions.flatMap((q) => {
-            const msgs = [{ user: "user", message: q.question }];
-            if (q.answer) {
-                msgs.push({ user: "system", message: q.answer });
-            }
-            return msgs;
-        })
-        : null;
+              const msgs = [{ user: "user", message: q.question }];
+              if (q.answer) {
+                  msgs.push({ user: "system", message: q.answer });
+              }
+              return msgs;
+          })
+        : [];
 
-    const defaultQuestions = !initialChats
+    const defaultQuestions = !initialChats.length
         ? [
-            { id: 1, question: "What can you do?" },
-            { id: 2, question: "Show me latest reports" },
-        ]
+              { id: 1, question: "What can you do?" },
+              { id: 2, question: "Show me latest reports" },
+          ]
         : [];
 
     return (
@@ -35,6 +35,7 @@ export default function UserChatPage({ auth, errors, chat, questions }) {
             <Head title={chat ? chat.title : "Dashboard"} />
 
             <UserChatArea
+                chatId={chat?.id}
                 userId={auth?.user?.id}
                 initialChats={initialChats}
                 defaultQuestions={defaultQuestions}
