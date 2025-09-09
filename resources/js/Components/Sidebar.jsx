@@ -126,8 +126,7 @@ export default function Sidebar({
           ) : (
             <NavLink
               key={idx}
-              href={route(section.route)}
-              method={section.method}
+              href={route(section.route, section.params)}
               active={route().current(section.route)}
             >
               <ListItem
