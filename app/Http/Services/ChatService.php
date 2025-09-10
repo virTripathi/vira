@@ -9,12 +9,12 @@ use App\Models\Chatbot\ChatQuestionAnswer;
 use App\Jobs\GenerateAiAnswerJob;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class ChatService
 {
-
     function __construct() {}
-    
+
     public function all()
     {
         return Auth::user()->chats;
@@ -31,55 +31,82 @@ class ChatService
         return $chat;
     }
 
-    public function save($data)
+    public function save()
     {
         $user = Auth::user();
-        $chat = Chat::where('user_id', $user->id)->where('status', 'processing')->first();
-        if (!$chat) {
+        return DB::transaction(function () use($user){
+
             $chat = new Chat();
             $chat->user_id = $user->id;
             $chat->status = 'processing';
-            $chat->title = "New Chat - " . date('M Y');
+            $chat->title = "New Chat";
             $chat->save();
-        }
-        $chatQuestion = ChatQuestion::create([
-            'chat_id' => $chat->id,
-            'question' => $data['data'],
-            'answer' => '',
-            'status' => 'processing'
-        ]);
-        Log::info('New chat question created: ' . $chatQuestion->id);
-        GenerateAiAnswerJob::dispatch($chatQuestion);
-        return $chatQuestion;
+
+            return $chat;
+        });
     }
 
-    public function update($id, $data) {}
+    public function update($id, $data)
+    {
+        return DB::transaction(function () use ($id, $data) {
+            $chat = Chat::findOrFail($id);
 
-    public function delete($id) {}
+            if ($chat->user_id !== Auth::id()) {
+                abort(403, 'Unauthorized');
+            }
+
+            $chat->update($data);
+
+            return $chat;
+        });
+    }
+
+    public function delete($id)
+    {
+        return DB::transaction(function () use ($id) {
+            $chat = Chat::findOrFail($id);
+
+            if ($chat->user_id !== Auth::id()) {
+                abort(403, 'Unauthorized');
+            }
+
+            $chat->delete();
+        });
+    }
 
     public function findAnswer($questionId)
     {
-        $chatQuestionAnswer = ChatQuestionAnswer::where('question_id', $questionId)->first();
-        return $chatQuestionAnswer ? $chatQuestionAnswer->answer : null;
+        return DB::transaction(function () use ($questionId) {
+            $chatQuestionAnswer = ChatQuestionAnswer::where('question_id', $questionId)->first();
+            return $chatQuestionAnswer ? $chatQuestionAnswer->answer : null;
+        });
     }
 
-    public function storeQuestion($chatId, $question) {
-        $chat = Chat::find($chatId);
-        $existingQuestion = ChatQuestion::whereRaw('LOWER(question) = ?', [strtolower($question['question'])])->first();
-        if($existingQuestion) {
-            $answer = $existingQuestion->latestAnswer->answer;
-            AnswerGeneratedEvent::dispatchWithRetry($answer, 3, $chat->user_id);
-            return;
-        }
+    public function storeQuestion($chatId, $question)
+    {
+        return DB::transaction(function () use ($chatId, $question) {
+            $chat = Chat::findOrFail($chatId);
 
-        $chatQuestion = ChatQuestion::create([
-            'chat_id' => $chat->id,
-            'question' => $question['question'],
-            'answer' => '',
-            'status' => 'processing'
-        ]);
-        Log::info('New chat question created: ' . $chatQuestion->id);
-        GenerateAiAnswerJob::dispatch($chatQuestion);
-        return $chatQuestion;
+            $existingQuestion = ChatQuestion::whereRaw('LOWER(question) = ?', [strtolower($question['question'])])->first();
+
+            if ($existingQuestion) {
+                $answer = $existingQuestion->latestAnswer->answer;
+                AnswerGeneratedEvent::dispatchWithRetry($answer, 3, $chat->user_id);
+                return $existingQuestion;
+            }
+
+            $chatQuestion = ChatQuestion::create([
+                'chat_id'  => $chat->id,
+                'question' => $question['question'],
+                'answer'   => '',
+                'status'   => 'processing'
+            ]);
+            Log::info('New chat question created: ' . $chatQuestion->id);
+            DB::afterCommit(function () use ($chatQuestion) {
+                GenerateAiAnswerJob::dispatch($chatQuestion);
+            });
+
+            return $chatQuestion;
+        });
     }
 }

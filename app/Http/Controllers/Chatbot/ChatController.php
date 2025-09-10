@@ -44,9 +44,13 @@ class ChatController extends Controller
 
     public function store(Request $request)
     {
-        Log::info("Store called", $request->all());
-        $data = $request->all();
-        return $this->chatService->save($data);
+        $chat = $this->chatService->save();
+        return Inertia::render('UserChatPage', [
+            'chat' => [
+                'id' => $chat->id,
+                'title' => $chat->title,
+            ]
+        ]);
     }
 
     public function update(Request $request, $id)
