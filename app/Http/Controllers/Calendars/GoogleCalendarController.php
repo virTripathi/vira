@@ -15,27 +15,6 @@ class GoogleCalendarController extends Controller
 {
     private $googleService;
 
-    // public function __construct(GoogleCalendarService $googleService)
-    // {
-    //     $this->googleService = $googleService;
-    // }
-
-    // public function redirect()
-    // {
-    //     Log::info('GoogleCalendarController.redirect');
-    //     return redirect()->away($this->googleService->getAuthUrl());
-    // }
-
-    // public function callback(Request $request)
-    // {
-    //     Log::info('GoogleCalendarController.callback', Crypt::encrypt($request->all()));
-    //     $token = $this->googleService->authenticate($request->code);
-    //     $user = Auth::user();
-    //     $user->google_token = json_encode($token);
-    //     $user->save();
-    //     return $this->successResponse('Google Calendar connected successfully.');
-    // }
-
     public function createEvent(Request $request)
     {
         Log::info('GoogleCalendarController.createEvent', [Crypt::encrypt($request->all())]);

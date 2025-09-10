@@ -6,6 +6,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Calendars\GoogleCalendarController;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\Auth\GoogleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,11 +52,12 @@ Route::middleware(['auth', 'authorize:user'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/calendar-event', [GoogleCalendarController::class, 'createEvent'])->name('calendar.event');
-    Route::get('/chats/{id}', [\App\Http\Controllers\Chatbot\ChatController::class, 'show'])->name('chats.show');
-    Route::post('/chats', [\App\Http\Controllers\Chatbot\ChatController::class, 'store'])->name('chats.store');
+    Route::get('/chats', [ChatController::class, 'index'])->name('chats.index');
+    Route::get('/chats/{id}', [ChatController::class, 'show'])->name('chats.show');
+    Route::post('/chats', [ChatController::class, 'store'])->name('chats.store');
 });
 Route::get('/google/redirect', [GoogleCalendarController::class, 'redirect'])->name('google.redirect');
 Route::get('/google/callback', [GoogleCalendarController::class, 'callback'])->name('google.callback');
-Route::get('auth/google/callback', [\App\Http\Controllers\Auth\GoogleController::class, 'callback']);
+Route::get('auth/google/callback', [GoogleController::class, 'callback']);
 
 require __DIR__ . '/auth.php';

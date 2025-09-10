@@ -25,14 +25,8 @@ export default function UserChatPage({ auth, errors, chat, questions }) {
         <AuthenticatedLayout
             auth={auth}
             errors={errors}
-            header={
-                <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                    {chat ? chat.title : "Dashboard"}
-                </h2>
-            }
             showFloatingAction={false}
         >
-            <Head title={chat ? chat.title : "Dashboard"} />
 
             <UserChatArea
                 chatId={chat?.id}

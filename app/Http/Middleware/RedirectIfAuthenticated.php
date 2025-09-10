@@ -26,10 +26,8 @@ class RedirectIfAuthenticated
                 $user = Auth::guard($guard)->user();
                 if ($user && $user->roles && $user->roles->isNotEmpty()) {
                     $userRole = strtolower(str_replace(' ', '-', $user->roles->first()->title));
-                    Log::info('userRole', ['role' => $userRole]);
                     return redirectToUserDashboard($userRole);
                 }
-                Log::info('before login');
                 return redirect('/login');
             }
         }

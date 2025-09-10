@@ -31,16 +31,27 @@ class ChatService
         return $chat;
     }
 
-    public function save()
+    public function save($question)
     {
         $user = Auth::user();
-        return DB::transaction(function () use($user){
+        return DB::transaction(function () use($user, $question){
 
             $chat = new Chat();
             $chat->user_id = $user->id;
             $chat->status = 'processing';
             $chat->title = "New Chat";
             $chat->save();
+
+            $chatQuestion = ChatQuestion::create([
+                'chat_id'  => $chat->id,
+                'question' => $question,
+                'answer'   => '',
+                'status'   => 'processing'
+            ]);
+            Log::info('New chat question created: ' . $chatQuestion->id);
+            DB::afterCommit(function () use ($chatQuestion) {
+                GenerateAiAnswerJob::dispatch($chatQuestion);
+            });
 
             return $chat;
         });

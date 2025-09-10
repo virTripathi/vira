@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Chatbot;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Repositories\RepositoryBuilder;
@@ -27,42 +27,23 @@ class ChatController extends Controller
     {
         $chat = $this->chatService->get($id);
 
-        return Inertia::render('UserChatPage', [
-            'chat' => [
-                'id' => $chat->id,
-                'title' => $chat->title,
-            ],
-            'questions' => $chat->questions->map(function ($q) {
-                return [
-                    'id' => $q->id,
-                    'question' => $q->question,
-                    'answer' => $q->latestAnswer ? $q->latestAnswer->answer : null,
-                ];
-            }),
-        ]);
+        return $chat;
     }
 
     public function store(Request $request)
     {
-        $chat = $this->chatService->save();
-        return Inertia::render('UserChatPage', [
-            'chat' => [
-                'id' => $chat->id,
-                'title' => $chat->title,
-            ]
-        ]);
+        $question = $request->get('question');
+        return $this->chatService->save($question);
     }
 
     public function update(Request $request, $id)
     {
-        Log::info("Update called");
         $data = $request->all();
         return $this->chatService->update($id, $data);
     }
 
     public function delete($id)
     {
-        Log::info("Delete called");
         return $this->chatService->delete($id);
     }
 

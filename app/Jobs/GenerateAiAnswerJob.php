@@ -42,17 +42,21 @@ class GenerateAiAnswerJob implements ShouldQueue
         LogJob::dispatch('GenerateAiAnswerJob.handle', ['chatQuestion' => $this->chatQuestion]);
         try {
             $response = $aiModel->ask($chatQuestion->question, $chatQuestion->chat->user);
+            $latestVersion = $this->chatQuestion
+                ->answers()
+                ->max('version') ?? 0;
 
             switch ($response['type']) {
                 case 'text':
-                    $this->chatQuestion->answer()->create([
-                        'answer' => $response['data']
+                    $this->chatQuestion->answers()->create([
+                        'answer'  => $response['data'],
+                        'version' => $latestVersion + 1,
                     ]);
                     break;
                 case 'function':
-                    $responseText = $response['data'];
-                    $this->chatQuestion->answer()->create([
-                        'answer' => $responseText
+                    $this->chatQuestion->answers()->create([
+                        'answer'  => $response['data'],
+                        'version' => $latestVersion + 1,
                     ]);
 
                     break;
@@ -61,7 +65,7 @@ class GenerateAiAnswerJob implements ShouldQueue
             }
             $this->chatQuestion->saveQuietly();
             LogJob::dispatch('GenerateAiAnswerJob.handle.completed', ['chatQuestion' => $this->chatQuestion]);
-            AnswerGeneratedEvent::dispatchWithRetry($this->chatQuestion->answer, 3, $this->chatQuestion->chat->user_id);
+            AnswerGeneratedEvent::dispatchWithRetry($this->chatQuestion->latestAnswer->answer, 3, $this->chatQuestion->chat->user_id);
         } catch (\Exception $e) {
             LogJob::dispatch('GenerateAiAnswerJob.handle.error', $e, 'error');
             // Handle exception

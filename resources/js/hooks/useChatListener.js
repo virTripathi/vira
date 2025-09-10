@@ -12,6 +12,7 @@ export default function useChatListener(userId, onAnswer) {
         const channel = echo
             .private(channelName)
             .listen(".AnswerGeneratedEvent", (data) => {
+                console.log(data);
                 onAnswer?.(data);
             })
             .listen("*", (event, data) => {

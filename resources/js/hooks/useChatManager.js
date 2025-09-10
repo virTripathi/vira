@@ -13,8 +13,12 @@ export function useChatManager(chatId, userId, initialChats = null, defaultQuest
   const [inputDisabled, setInputDisabled] = useState(false);
 
   const onQuestionSend = async (inputString, { setChats, setIsAnswerPending, setInputDisabled }) => {
+    var route = `/api/v1/chats`
+    if(chatId) {
+      route = `/api/v1/chats/${chatId}/question`;
+    }
     try {
-      await axios.post(`/api/v1/chats/${chatId}/question`, {
+      await axios.post(route, {
         question: inputString,
       });
     } catch (error) {
@@ -40,7 +44,10 @@ export function useChatManager(chatId, userId, initialChats = null, defaultQuest
   };
 
   const handleNewAnswer = (answer) => {
+    console.log(answer);
+    console.log(chats);
     setChats((prev) => [...prev, { user: "system", message: answer }]);
+    console.log("chats updated:",chats);
     setIsAnswerPending(false);
     setInputDisabled(false);
   };

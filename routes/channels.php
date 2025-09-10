@@ -19,6 +19,5 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 });
 
 Broadcast::channel('user.{id}', function ($user, $id) {
-    Log::info('a',['userId'=> $user->id, 'id'=> $id]);
     return (int) $user->id === (int) $id;
 });
