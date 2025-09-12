@@ -1,18 +1,40 @@
-<p align="center">VIRA</p>
+# Mini-Jarvis 🤖
 
-## About Application
+Mini-Jarvis is a full-stack **AI-powered assistant** that combines **Laravel, React, and Google AI Studio**.  
+It understands natural language queries, executes tasks (like reminders, scheduling, and task management), and provides conversational responses.
 
-VIRA is a advanced task management platform built on top of Laravel and React JS where you can create and have a log of your tasks:
+---
 
-## Running Application
+## 🚀 Highlights
 
-To run the app on your local server, please ensure you have php, composer and git installed on your system you may follow these steps:
-1. [Clone the repository](https://github.com/virTripathi/mini-jarvis).
-If you're using windows, [install WSL2](https://learn.microsoft.com/en-us/windows/wsl/install).
-1. [Install docker desktop](https://docs.docker.com/desktop/install/windows-install/).
-2. Run Docker Engine
-3. go to docker-cli and run:
-4. docker-compose build --up
-5. Run docker-compose exec mini-jarvis-docker php artisan migrate --seed to migrate tables and seed the db.
-6. Wait for a few minutes and your application will start running on localhost:9000/public and mysql_db instance in [9001 port](http://localhost:9001/index.php?route=/).
-7. Run localhost:9000/public/task_export.php to download all the tasks in csv format.
+- **Modern Stack**: Laravel 11, Inertia.js + React 18, Tailwind CSS  
+- **AI Integration**: Google AI Studio (Gemini API)  
+- **Task Automation**: Natural language → structured function calls  
+- **Scalable**: MySQL/MSSQL support, background queues, Docker-ready  
+- **CI/CD**: GitHub Actions for automated build & deploy  
+
+---
+
+## ✨ What It Does
+
+- **Conversational AI** → Understands queries and responds intelligently.  
+- **Smart Function Calls** → Example: "Remind me to send report at 5pm" creates a reminder.  
+- **Task & Reminder Management** → Async jobs handle tasks efficiently.  
+- **Portable Setup** → Dockerized for easy deployment.  
+
+---
+
+## 🐳 Quick Start
+
+```bash
+git clone https://github.com/your-username/mini-jarvis.git
+cd mini-jarvis
+composer install && npm install
+php artisan serve & npm run dev
+```
+
+---
+
+## 📜 License
+
+Open-sourced under the [MIT License](LICENSE).
