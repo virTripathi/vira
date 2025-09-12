@@ -1,6 +1,6 @@
-# Mini-Jarvis 🤖
+# VIRA 🤖
 
-Mini-Jarvis is a full-stack **AI-powered assistant** that combines **Laravel, React, and Google AI Studio**.  
+VIRA is a full-stack **AI-powered assistant** that combines **Laravel, React, and Google AI Studio**.  
 It understands natural language queries, executes tasks (like reminders, scheduling, and task management), and provides conversational responses.
 
 ---
@@ -8,10 +8,11 @@ It understands natural language queries, executes tasks (like reminders, schedul
 ## 🚀 Highlights
 
 - **Modern Stack**: Laravel 11, Inertia.js + React 18, Tailwind CSS  
-- **AI Integration**: Google AI Studio (Gemini API)  
+- **AI Integration**: Google AI Studio (Gemini API)
+- **Weather API Integration**: Weather API Integration
+- **Google Calendar Integration**: Google Social Login and Calendar integration to schedule events
 - **Task Automation**: Natural language → structured function calls  
-- **Scalable**: MySQL/MSSQL support, background queues, Docker-ready  
-- **CI/CD**: GitHub Actions for automated build & deploy  
+- **Scalable**: MySQL support, background queues
 
 ---
 
@@ -27,8 +28,8 @@ It understands natural language queries, executes tasks (like reminders, schedul
 ## 🐳 Quick Start
 
 ```bash
-git clone https://github.com/your-username/mini-jarvis.git
-cd mini-jarvis
+git clone https://github.com/your-username/vira.git
+cd vira
 composer install && npm install
 php artisan serve & npm run dev
 ```
