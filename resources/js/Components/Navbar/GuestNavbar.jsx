@@ -5,8 +5,11 @@ import {
 } from "@material-tailwind/react";
 import { SunIcon, MoonIcon } from "@heroicons/react/24/solid";
 import Logo from "../Logo";
+import { Link, usePage } from "@inertiajs/react";
  
 export function GuestNavbar({theme, toggleTheme}) {
+   const { auth } = usePage().props;
+      const isLoggedIn = !!auth.user;
   const navList = (
     <ul className="mt-2 mb-4 flex gap-2 lg:mb-0 lg:mt-0 flex-row items-center lg:gap-3">
       <Typography
@@ -35,9 +38,9 @@ export function GuestNavbar({theme, toggleTheme}) {
         color="blue-gray"
         className="p-1 font-normal py-2 px-3 rounded-xl dark:bg-gray-900 bg-gray-100 cursor-pointer"
       >
-        <a href="#" className="flex items-center text-lg md:text-md font-bold text-purple-500">
-          Get Started
-        </a>
+        <Link href={isLoggedIn ? "/chats" : "/login"} className="flex items-center text-lg md:text-md font-bold text-purple-500">
+          {isLoggedIn ? "Go to Chats" : "Get Started"}
+        </Link>
       </Typography>
       <Typography
         as="li"
