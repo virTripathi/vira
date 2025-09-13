@@ -20,7 +20,7 @@ export default function UseCaseSection({ useCases, className }) {
                 <p className="mb-20 text-lg font-md tracking-wide">Use Cases</p> 
                 <div className="block flex flex-wrap gap-4 justify-center items-center mb-12">
                     {useCases.map((useCase, index)=>(
-                        <Button key="index" onClick={()=>setCurrentUseCase(index)} className={`${index==currentUseCase?"!border-purple-800":""} dark:border-gray-800 dark:text-gray-700 text-gray-700 focus:ring-0 active:ring-0`} variant="outlined">{useCase.title}</Button>
+                        <Button key={index} onClick={()=>setCurrentUseCase(index)} className={`${index==currentUseCase?"!border-purple-800":""} dark:border-gray-800 dark:text-gray-700 text-gray-700 focus:ring-0 active:ring-0`} variant="outlined">{useCase.title}</Button>
                     ))}
                 </div>
                 {useCases.map((useCase, index)=>(

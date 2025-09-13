@@ -45,7 +45,7 @@ export default function Sidebar({
             <div className="flex justify-between items-center">
                 <div className="mb-2 p-1">
                     <img
-                        src="vira_logo.png"
+                        src="/vira_logo.png"
                         alt="logo"
                         width={30}
                         height={30}

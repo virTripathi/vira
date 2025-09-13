@@ -13,6 +13,7 @@
         "laravel/reverb": "^1.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.7",
+        "razorpay/razorpay": "2.*",
         "tightenco/ziggy": "^1.0"
     },
     "require-dev": {

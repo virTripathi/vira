@@ -37,4 +37,12 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
+    'razorpay' => [
+        'key' => env('RAZORPAY_KEY_ID'),
+        'secret' => env('RAZORPAY_KEY_SECRET'),
+        'plan_ids' => [
+            'monthly' => env('RAZORPAY_MONTHLY_PLAN_ID')
+        ]
+    ]
+
 ];

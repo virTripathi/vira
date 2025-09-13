@@ -8,6 +8,8 @@ use Inertia\Inertia;
 use App\Http\Controllers\Calendars\GoogleCalendarController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,10 +40,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('tasks', TaskController::class);
     });
 
-    Route::middleware('authorize:general-user')->group(function() {
+    // Route::middleware('authorize:general-user')->group(function() {
         Route::get('/general-user-dashboard', function () {
             return Inertia::render('UserChatPage');
-        })->name('general-user.dashboard');
+        // })->name('general-user.dashboard');
     });
 });
 
@@ -55,6 +57,10 @@ Route::middleware(['auth', 'authorize:user'])->group(function () {
     Route::get('/chats', [ChatController::class, 'index'])->name('chats.index');
     Route::get('/chats/{id}', [ChatController::class, 'show'])->name('chats.show');
     Route::post('/chats', [ChatController::class, 'store'])->name('chats.store');
+    Route::post('/create-subscription', [SubscriptionController::class, 'store'])->name('subscription.create');
+    Route::get('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
+    Route::get('/payment/failed', [PaymentController::class, 'failed'])->name('payment.failed');
+
 });
 Route::get('/google/redirect', [GoogleCalendarController::class, 'redirect'])->name('google.redirect');
 Route::get('/google/callback', [GoogleCalendarController::class, 'callback'])->name('google.callback');
