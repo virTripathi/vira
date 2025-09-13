@@ -4,6 +4,8 @@ namespace App\Http\Services;
 
 use App\Models\Subscription;
 use Illuminate\Support\Facades\Log;
+use App\Mail\SubscriptionCreatedMail;
+use Illuminate\Support\Facades\Mail;
 
 class RazorpayWebhookService
 {
@@ -50,8 +52,10 @@ class RazorpayWebhookService
     {
         $entity = $payload['subscription']['entity'] ?? ($payload['payload']['subscription']['entity'] ?? null);
         if ($entity) {
-            $this->updateUserSubscription($entity, 'active');
+            $subscription = $this->updateUserSubscription($entity, 'active');
         }
+        Mail::to($subscription->user->email)->send(new SubscriptionCreatedMail($subscription->user));
+
     }
 
     private function chargeSubscription(array $payload)
@@ -107,6 +111,7 @@ class RazorpayWebhookService
 
             $subscription->save();
         }
+        return $subscription->refresh();
     }
 
     public function subscriptionPaused(array $payload)
