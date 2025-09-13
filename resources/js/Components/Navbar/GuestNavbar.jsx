@@ -36,7 +36,7 @@ export function GuestNavbar({theme, toggleTheme}) {
         as="li"
         variant="small"
         color="blue-gray"
-        className="p-1 font-normal py-2 px-3 rounded-xl dark:bg-gray-900 bg-gray-100 cursor-pointer"
+        className="p-1 font-normal py-2 px-3 rounded-xl dark:bg-gray-950 bg-gray-100 cursor-pointer"
       >
         <Link href={isLoggedIn ? "/chats" : "/login"} className="flex items-center text-lg md:text-md font-bold text-purple-500">
           {isLoggedIn ? "Go to Chats" : "Get Started"}
@@ -46,7 +46,7 @@ export function GuestNavbar({theme, toggleTheme}) {
         as="li"
         variant="small"
         color="blue-gray"
-        className="p-1 font-normal py-2 px-3 rounded-xl dark:bg-gray-900 bg-gray-100 cursor-pointer"
+        className="p-1 font-normal py-2 px-3 rounded-xl dark:bg-gray-950 bg-gray-100 cursor-pointer"
         onClick={toggleTheme}
       >
         <a href="#" className="flex items-center text-lg md:text-md font-bold text-purple-500">
@@ -57,8 +57,8 @@ export function GuestNavbar({theme, toggleTheme}) {
   );
  
   return (
-      <Navbar className="bg-transparent sticky top-0 z-10 h-max max-w-full rounded-none px-4 py-2 lg:px-8 lg:py-4 shadow dark:shadow-black dark:border-gray-900">
-        <div className="flex items-center justify-between text-blue-gray-900">
+      <Navbar className="bg-transparent sticky top-0 z-10 h-max max-w-full rounded-none px-4 py-2 lg:px-8 lg:py-4 shadow dark:shadow-black dark:border-gray-950">
+        <div className="flex items-center justify-between text-blue-gray-950">
           <Logo />
           <div className="flex items-center gap-4">
             <div className="mr-4">{navList}</div>

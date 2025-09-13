@@ -30,7 +30,7 @@ export default function TaskForm(props, className = "max-w-xl") {
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                     <div className="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                         <div className='flex justify-between items-center'>
-                            <h2 className="text-lg font-medium text-gray-900">
+                            <h2 className="text-lg font-medium text-gray-950">
                                 {task.id ? 'Edit Task' : 'Create New Task'}
                             </h2>
                             <Link href={route('tasks.index')}>

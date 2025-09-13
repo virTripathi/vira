@@ -7,14 +7,14 @@ export default function ChatArea({ className, chats, questions, addQuestion, isA
                 chat.user === "system" ? (
                     <div
                         key={index}
-                        className="system ms-2 me-2 mt-4 rounded-[18px] px-4 py-1.5 text-gray-900 dark:text-white"
+                        className="system ms-2 me-2 mt-4 rounded-[18px] px-4 py-1.5 text-gray-950 dark:text-white"
                     >
                         {chat.message}
                     </div>
                 ) : (
                     <div
                         key={index}
-                        className="w-fit user ms-2 me-2 mt-4 dark:bg-gray-900 bg-gray-100 dark:text-white text-black rounded-[18px] px-4 py-1.5"
+                        className="w-fit user ms-2 me-2 mt-4 dark:bg-gray-950 bg-gray-100 dark:text-white text-black rounded-[18px] px-4 py-1.5"
                     >
                         {chat.message}
                     </div>

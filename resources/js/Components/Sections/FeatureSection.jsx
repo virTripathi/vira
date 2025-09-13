@@ -14,7 +14,7 @@ export default function FeatureSection({ features }) {
 
         clonedFeatures.forEach((feature) => {
             const clone = document.createElement("div");
-            clone.className = "overflow-hidden bg-gray-100 dark:bg-gray-900 shadow-[0_3px_10px_rgb(0,0,0,0.2)] border border-gray-300 dark:border-gray-900 text-black dark:text-white p-4 rounded-lg h-60 w-[calc(100vw - 10rem)]";
+            clone.className = "overflow-hidden bg-gray-100 dark:bg-gray-950 shadow-[0_3px_10px_rgb(0,0,0,0.2)] border border-gray-300 dark:border-gray-950 text-black dark:text-white p-4 rounded-lg h-60 w-[calc(100vw - 10rem)]";
             clone.innerHTML = `
                 <h4 class="font-bold text-xl mb-2">${feature.title}</h4>
                 <p class="text-sm font-light italic tracking-wide text-gray-700 dark:text-gray-200">${feature.subtitle}</p>
@@ -56,7 +56,7 @@ export default function FeatureSection({ features }) {
                         {features.map((feature, index) => (
                             <div
                                 key={index}
-                                className="overflow-hidden bg-gray-100 dark:bg-gray-900 shadow-[0_3px_10px_rgb(0,0,0,0.2)] border border-gray-300 dark:border-gray-900 text-black dark:text-white p-4 rounded-lg h-60 w-[calc(100vw - 10rem)]"
+                                className="overflow-hidden bg-gray-100 dark:bg-gray-950 shadow-[0_3px_10px_rgb(0,0,0,0.2)] border border-gray-300 dark:border-gray-950 text-black dark:text-white p-4 rounded-lg h-60 w-[calc(100vw - 10rem)]"
                             >
                                 <h4 className="font-bold text-xl mb-2">{feature.title}</h4>
                                 <p className="text-sm font-light italic tracking-wide text-gray-700 dark:text-gray-200">
@@ -71,7 +71,7 @@ export default function FeatureSection({ features }) {
                 {features.map((feature, index) => (
                     <div
                         key={index}
-                        className="bg-gray-100 dark:bg-gray-900 shadow-[0_3px_10px_rgb(0,0,0,0.2)] border border-gray-300 dark:border-gray-900 text-black dark:text-white w-full p-4 rounded-lg h-48"
+                        className="bg-gray-100 dark:bg-gray-950 shadow-[0_3px_10px_rgb(0,0,0,0.2)] border border-gray-300 dark:border-gray-950 text-black dark:text-white w-full p-4 rounded-lg h-48"
                     >
                         <h4 className="font-bold text-2xl mb-4">{feature.title}</h4>
                         <p className="font-light italic tracking-wide text-gray-700 dark:text-gray-200">

@@ -32,7 +32,7 @@ export default function Index(props) {
         >
             <div className="transition-all sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div className="p-6 text-gray-900">Tasks</div>
+                    <div className="p-6 text-gray-950">Tasks</div>
                     <PrimaryButton className="m-6">
                         <Link href={route('tasks.create')}>New</Link>
                     </PrimaryButton>

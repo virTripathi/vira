@@ -17,7 +17,7 @@ export default function Navbar({
                             onClick={() => setShowingSidebar((prev) => !prev)}
                             className={
                                 (showingSidebar ? "inline-flex" : "hidden") +
-                                " items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:hover:bg-gray-900 focus:text-gray-500 transition duration-150 ease-in-out"
+                                " items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-950 focus:outline-none focus:hover:bg-gray-950 focus:text-gray-500 transition duration-150 ease-in-out"
                             }
                         >
                             <svg

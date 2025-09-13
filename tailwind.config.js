@@ -1,24 +1,28 @@
-const defaultTheme = require('tailwindcss/defaultTheme');
+const defaultTheme = require("tailwindcss/defaultTheme");
 const withMT = require("@material-tailwind/react/utils/withMT");
+const colors = require('tailwindcss/colors');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = withMT({
     content: [
-        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
-        './storage/framework/views/*.php',
-        './resources/views/**/*.blade.php',
-        './resources/js/**/*.jsx',
+        "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php",
+        "./storage/framework/views/*.php",
+        "./resources/views/**/*.blade.php",
+        "./resources/js/**/*.jsx",
     ],
-    darkMode: 'class',
+    darkMode: "class",
 
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ["Figtree", ...defaultTheme.fontFamily.sans],
             },
-            scrollBehavior: ['responsive'],
+            scrollBehavior: ["responsive"],
+            colors: {
+                ...colors,
+            },
         },
     },
 
-    plugins: [require('@tailwindcss/forms')],
+    plugins: [require("@tailwindcss/forms")],
 });

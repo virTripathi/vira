@@ -39,7 +39,7 @@ export default function Sidebar({
 
     return (
         <Card
-            className={`${className} bg-white dark:bg-black text-gray-900 dark:text-white fixed z-10 h-[100vh] transition-all lg:w-[20rem] max-w-[80vw] lg:max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5 rounded-none`}
+            className={`${className} bg-white dark:bg-black text-gray-950 dark:text-white fixed z-10 h-[100vh] transition-all lg:w-[20rem] max-w-[80vw] lg:max-w-[20rem] p-4 shadow-xl shadow-blue-gray-950/5 rounded-none`}
         >
             {/* Header */}
             <div className="flex justify-between items-center">

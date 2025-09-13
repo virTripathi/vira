@@ -139,7 +139,7 @@ export default function Welcome(props) {
             viewport={{ once: true, amount: 0.2 }}
           >
             <UseCaseSection
-              className="min-h-screen bg-gray-200 dark:bg-gray-900"
+              className="min-h-screen bg-gray-200 dark:bg-gray-950"
               useCases={useCases}
             />
           </motion.div>
