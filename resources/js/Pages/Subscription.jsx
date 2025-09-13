@@ -25,7 +25,7 @@ export default function Subscription() {
             modal: {
                 ondismiss: function () {
                     window.location.href =
-                        "/#pricing";
+                        window.location.href = "/#pricing?error=Payment was cancelled";
                 },
             },
             theme: { color: "#9c27b0" },
