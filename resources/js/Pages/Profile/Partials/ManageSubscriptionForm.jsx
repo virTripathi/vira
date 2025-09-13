@@ -23,7 +23,7 @@ export default function ManageSubscriptionForm({ className, subscription }) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (!subscription) return; // prevent errors
+        if (!subscription) return;
 
         let routeName = null;
         if (action === "cancel") routeName = "subscription.cancel";
@@ -38,7 +38,6 @@ export default function ManageSubscriptionForm({ className, subscription }) {
         });
     };
 
-    // If no subscription
     if (!subscription) {
         return (
             <section className={`space-y-6 ${className}`}>
@@ -52,6 +51,87 @@ export default function ManageSubscriptionForm({ className, subscription }) {
         );
     }
 
+    const { status } = subscription;
+
+    const renderActions = () => {
+        switch (status) {
+            case "pending":
+                return (
+                    <p className="text-sm text-yellow-600">
+                        Your subscription is pending. Please complete the payment to activate it.
+                    </p>
+                );
+
+            case "active":
+                return (
+                    <div className="flex gap-3">
+                        <SecondaryButton onClick={() => openModal("pause")}>
+                            Pause Subscription
+                        </SecondaryButton>
+                        <DangerButton onClick={() => openModal("cancel")}>
+                            Cancel Permanently
+                        </DangerButton>
+                    </div>
+                );
+
+            case "paused":
+                return (
+                    <SecondaryButton onClick={() => openModal("resume")}>
+                        Resume Subscription
+                    </SecondaryButton>
+                );
+
+            case "cancelled":
+                return (
+                    <p className="text-sm text-red-600">
+                        Your subscription has been cancelled.
+                    </p>
+                );
+
+            case "failed":
+                return (
+                    <p className="text-sm text-red-600">
+                        Payment failed. Please retry or create a new subscription.
+                    </p>
+                );
+
+            case "expired":
+                return (
+                    <p className="text-sm text-gray-600">
+                        Your subscription has expired. Please purchase a new plan.
+                    </p>
+                );
+
+            case "pending_cancel":
+                return (
+                    <p className="text-sm text-orange-600">
+                        Cancellation requested. Waiting for confirmation.
+                    </p>
+                );
+
+            case "pending_pause":
+                return (
+                    <p className="text-sm text-orange-600">
+                        Pause requested. Waiting for confirmation.
+                    </p>
+                );
+
+            case "pending_resume":
+                return (
+                    <p className="text-sm text-orange-600">
+                        Resume requested. Waiting for confirmation.
+                    </p>
+                );
+
+            default:
+                return (
+                    <p className="text-sm text-gray-600">
+                        Unknown subscription status.
+                    </p>
+                );
+        }
+    };
+
     return (
         <section className={`space-y-6 ${className}`}>
             <header>
@@ -61,24 +141,7 @@ export default function ManageSubscriptionForm({ className, subscription }) {
                 </p>
             </header>
 
-            <div className="flex gap-3">
-                {subscription.status === "active" && (
-                    <>
-                        <SecondaryButton onClick={() => openModal("pause")}>
-                            Deactivate (Pause)
-                        </SecondaryButton>
-                        <DangerButton onClick={() => openModal("cancel")}>
-                            Cancel Permanently
-                        </DangerButton>
-                    </>
-                )}
-
-                {subscription.status === "paused" && (
-                    <SecondaryButton onClick={() => openModal("resume")}>
-                        Reactivate
-                    </SecondaryButton>
-                )}
-            </div>
+            {renderActions()}
 
             {/* Confirmation Modal */}
             <Modal show={showModal} onClose={closeModal}>
@@ -86,24 +149,26 @@ export default function ManageSubscriptionForm({ className, subscription }) {
                     <h2 className="text-lg font-medium text-gray-950">
                         {action === "cancel" && "Cancel Subscription?"}
                         {action === "pause" && "Pause Subscription?"}
-                        {action === "resume" && "Reactivate Subscription?"}
+                        {action === "resume" && "Resume Subscription?"}
                     </h2>
 
                     <p className="mt-1 text-sm text-inherit">
                         {action === "cancel" &&
                             "Once canceled, your subscription will end permanently."}
                         {action === "pause" &&
-                            "You can pause your subscription. You will not be billed until resumed."}
+                            "Pausing will stop billing until you resume."}
                         {action === "resume" &&
                             "Your subscription will be reactivated and billing will continue."}
                     </p>
 
                     <div className="mt-6 flex justify-end">
-                        <SecondaryButton onClick={closeModal}>Close</SecondaryButton>
+                        <SecondaryButton type="button" onClick={closeModal}>
+                            Close
+                        </SecondaryButton>
                         <DangerButton className="ml-3" disabled={processing}>
                             {action === "cancel" && "Cancel"}
                             {action === "pause" && "Pause"}
-                            {action === "resume" && "Reactivate"}
+                            {action === "resume" && "Resume"}
                         </DangerButton>
                     </div>
                 </form>

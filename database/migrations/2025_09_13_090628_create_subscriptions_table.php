@@ -13,9 +13,8 @@ return new class extends Migration
 
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
 
-            // Razorpay IDs
             $table->string('razorpay_subscription_id')->unique();
-            $table->string('razorpay_payment_id')->nullable(); // first payment
+            $table->string('razorpay_payment_id')->nullable();
             $table->string('razorpay_plan_id');
             $table->string('plan');
             $table->enum('status', [

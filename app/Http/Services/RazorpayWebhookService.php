@@ -3,113 +3,125 @@
 namespace App\Http\Services;
 
 use App\Models\Subscription;
-use App\Models\User;
 use Illuminate\Support\Facades\Log;
 
 class RazorpayWebhookService
 {
     public function handleEvent($event, $payload)
     {
-        Log::info("Razorpay Webhook Event: $event");
+        Log::info("Razorpay Webhook Event: $event", $payload);
 
         switch ($event) {
             case 'subscription.activated':
                 $this->activateSubscription($payload);
                 break;
+
             case 'subscription.charged':
                 $this->chargeSubscription($payload);
                 break;
+
             case 'subscription.cancelled':
                 $this->cancelSubscription($payload);
                 break;
+
             case 'subscription.completed':
+            case 'subscription.expired':
                 $this->completeSubscription($payload);
                 break;
+
+            case 'subscription.paused':
+                $this->subscriptionPaused($payload);
+                break;
+
+            case 'subscription.resumed':
+                $this->subscriptionResumed($payload);
+                break;
+
             case 'payment.failed':
                 $this->paymentFailed($payload);
                 break;
-            case 'subscription.paused':
-                $this->subscriptionPaused($payload);
-            case 'subscription.resume':
-                $this->subscriptionResumed($payload);
-            case 'subscription.cancel':
-                $this->subscriptionCancelled($payload);
-                break;
+
             default:
-                Log::info('Unhandled event: ' . $event);
+                Log::info('Unhandled Razorpay event: ' . $event);
         }
     }
 
-    private function activateSubscription($payload)
+    private function activateSubscription(array $payload)
     {
-        $this->updateUserSubscription($payload['subscription']['entity']['id'], 'active');
+        $entity = $payload['subscription']['entity'] ?? ($payload['payload']['subscription']['entity'] ?? null);
+        if ($entity) {
+            $this->updateUserSubscription($entity, 'active');
+        }
     }
 
-    private function chargeSubscription($payload)
+    private function chargeSubscription(array $payload)
     {
-        $this->updateUserSubscription($payload['subscription']['entity']['id'], 'active');
+        $entity = $payload['subscription']['entity'] ?? ($payload['payload']['subscription']['entity'] ?? null);
+        $payment = $payload['payment']['entity'] ?? null;
+
+        if ($entity) {
+            $this->updateUserSubscription($entity, 'active', $payment);
+        }
     }
 
-    private function cancelSubscription($payload)
+    private function cancelSubscription(array $payload)
     {
-        $this->updateUserSubscription($payload['subscription']['entity']['id'], 'cancelled');
+        $entity = $payload['subscription']['entity'] ?? ($payload['payload']['subscription']['entity'] ?? null);
+        if ($entity) {
+            $this->updateUserSubscription($entity, 'cancelled');
+        }
     }
 
-    private function completeSubscription($payload)
+    private function completeSubscription(array $payload)
     {
-        $this->updateUserSubscription($payload['subscription']['entity']['id'], 'completed');
+        $entity = $payload['subscription']['entity'] ?? ($payload['payload']['subscription']['entity'] ?? null);
+        if ($entity) {
+            $this->updateUserSubscription($entity, 'expired');
+        }
     }
 
-    private function paymentFailed($payload)
+    private function paymentFailed(array $payload)
     {
         $subscriptionId = $payload['payment']['entity']['subscription_id'] ?? null;
         if ($subscriptionId) {
-            $this->updateUserSubscription($subscriptionId, 'payment_failed');
+            $subscription = Subscription::where('razorpay_subscription_id', $subscriptionId)->first();
+            if ($subscription) {
+                $subscription->status = 'failed';
+                $subscription->save();
+            }
         }
     }
 
-    private function updateUserSubscription($razorpaySubscriptionId, $status)
+    private function updateUserSubscription(array $entity, string $status, array $payment = null)
     {
-        $user = User::where('razorpay_subscription_id', $razorpaySubscriptionId)->first();
-        if ($user) {
-            $user->subscription_status = $status;
-            $user->save();
+        $subscription = Subscription::where('razorpay_subscription_id', $entity['id'])->first();
+
+        if ($subscription) {
+            $subscription->status = $status;
+            $subscription->razorpay_plan_id = $entity['plan_id'] ?? $subscription->razorpay_plan_id;
+            $subscription->plan = $entity['notes']['plan'] ?? $subscription->plan;
+
+            if ($payment) {
+                $subscription->razorpay_payment_id = $payment['id'] ?? $subscription->razorpay_payment_id;
+            }
+
+            $subscription->save();
         }
     }
 
     public function subscriptionPaused(array $payload)
     {
-        $entity = $payload['payload']['subscription']['entity'] ?? null;
-        if (!$entity) {
-            Log::error('Razorpay Webhook: subscriptionPaused missing entity', $payload);
-            return false;
+        $entity = $payload['subscription']['entity'] ?? ($payload['payload']['subscription']['entity'] ?? null);
+        if ($entity) {
+            $this->updateUserSubscription($entity, 'paused');
         }
-
-        return Subscription::where('razorpay_subscription_id', $entity['id'])
-            ->update(['status' => $entity['status'] ?? 'paused']);
     }
 
     public function subscriptionResumed(array $payload)
     {
-        $entity = $payload['payload']['subscription']['entity'] ?? null;
-        if (!$entity) {
-            Log::error('Razorpay Webhook: subscriptionResumed missing entity', $payload);
-            return false;
+        $entity = $payload['subscription']['entity'] ?? ($payload['payload']['subscription']['entity'] ?? null);
+        if ($entity) {
+            $this->updateUserSubscription($entity, 'active');
         }
-
-        return Subscription::where('razorpay_subscription_id', $entity['id'])
-            ->update(['status' => $entity['status'] ?? 'active']);
-    }
-
-    public function subscriptionCancelled(array $payload)
-    {
-        $entity = $payload['payload']['subscription']['entity'] ?? null;
-        if (!$entity) {
-            Log::error('Razorpay Webhook: subscriptionCancelled missing entity', $payload);
-            return false;
-        }
-
-        return Subscription::where('razorpay_subscription_id', $entity['id'])
-            ->update(['status' => $entity['status'] ?? 'cancelled']);
     }
 }
