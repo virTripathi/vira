@@ -32,9 +32,9 @@ class SubscriptionController extends Controller
             );
 
             return Inertia::render('Subscription', [
-                'razorpay_key' => config('services.razorpay.key'),
+                'razorpay_key'    => config('services.razorpay.key'),
                 'subscription_id' => $subscription->razorpay_subscription_id,
-                'plan' => $subscription->plan,
+                'plan'            => $subscription->plan,
             ]);
         } catch (\Exception $e) {
             Log::error('Razorpay subscription error: ' . $e->getMessage());
@@ -42,6 +42,45 @@ class SubscriptionController extends Controller
             return response()->json([
                 'error' => 'Unable to create subscription. Please try again later.',
             ], 500);
+        }
+    }
+
+    public function cancel($id)
+    {
+        try {
+            $this->subscriptionService->cancelSubscription($id, Auth::id());
+
+            return back()->with('success', 'Subscription cancelled successfully.');
+        } catch (\Exception $e) {
+            Log::error('Cancel subscription error: ' . $e->getMessage());
+
+            return back()->withErrors(['error' => 'Unable to cancel subscription.']);
+        }
+    }
+
+    public function pause($id)
+    {
+        try {
+            $this->subscriptionService->pauseSubscription($id, Auth::id());
+
+            return back()->with('success', 'Subscription paused successfully.');
+        } catch (\Exception $e) {
+            Log::error('Pause subscription error: ' . $e->getMessage());
+
+            return back()->withErrors(['error' => 'Unable to pause subscription.']);
+        }
+    }
+
+    public function resume($id)
+    {
+        try {
+            $this->subscriptionService->resumeSubscription($id, Auth::id());
+
+            return back()->with('success', 'Subscription resumed successfully.');
+        } catch (\Exception $e) {
+            Log::error('Resume subscription error: ' . $e->getMessage());
+
+            return back()->withErrors(['error' => 'Unable to resume subscription.']);
         }
     }
 }

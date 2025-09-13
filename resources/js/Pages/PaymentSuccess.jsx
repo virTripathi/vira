@@ -19,7 +19,7 @@ export default function PaymentSuccess() {
                     Subscription ID: {subscription_id}
                 </p>
                 <Link
-                    href={route('general-user.dashboard')}
+                    href={route('chats.index')}
                     className="mt-6 rounded bg-purple-600 px-4 py-2 text-white"
                 >
                     Get your AI Assistant

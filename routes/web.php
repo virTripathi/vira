@@ -51,6 +51,9 @@ Route::middleware(['auth', 'authorize:user'])->group(function () {
     Route::post('/create-subscription', [SubscriptionController::class, 'store'])->name('subscription.create');
     Route::get('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
     Route::get('/payment/failed', [PaymentController::class, 'failed'])->name('payment.failed');
+    Route::post('/subscription/{id}/cancel', [SubscriptionController::class, 'cancel'])->name('subscription.cancel');
+    Route::post('/subscription/{id}/pause', [SubscriptionController::class, 'pause'])->name('subscription.pause');
+    Route::post('/subscription/{id}/resume', [SubscriptionController::class, 'resume'])->name('subscription.resume');
 });
 Route::get('/google/redirect', [GoogleCalendarController::class, 'redirect'])->name('google.redirect');
 Route::get('/google/callback', [GoogleCalendarController::class, 'callback'])->name('google.callback');
