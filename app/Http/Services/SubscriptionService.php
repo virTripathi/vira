@@ -46,32 +46,43 @@ class SubscriptionService
 
     public function cancelSubscription(string $subscriptionId, int $userId)
     {
-        $razorpaySub = $this->razorpay->subscription->fetch($subscriptionId);
+        $subscription = Subscription::where('id', $subscriptionId)
+            ->where('user_id', $userId)
+            ->firstOrFail();
+
+        $razorpaySub = $this->razorpay->subscription->fetch($subscription->razorpay_subscription_id);
         $razorpaySub->cancel();
 
-        // Update local DB
-        return Subscription::where('razorpay_subscription_id', $subscriptionId)
-            ->where('user_id', $userId)
-            ->update(['status' => 'cancelled']);
+        $subscription->update(['status' => 'pending_cancel']);
+
+        return true;
     }
 
     public function pauseSubscription(string $subscriptionId, int $userId)
     {
-        $razorpaySub = $this->razorpay->subscription->fetch($subscriptionId);
+        $subscription = Subscription::where('id', $subscriptionId)
+            ->where('user_id', $userId)
+            ->firstOrFail();
+
+        $razorpaySub = $this->razorpay->subscription->fetch($subscription->razorpay_subscription_id);
         $razorpaySub->pause(['pause_at' => 'now']);
 
-        return Subscription::where('razorpay_subscription_id', $subscriptionId)
-            ->where('user_id', $userId)
-            ->update(['status' => 'paused']);
+        $subscription->update(['status' => 'pending_pause']);
+
+        return true;
     }
 
     public function resumeSubscription(string $subscriptionId, int $userId)
     {
-        $razorpaySub = $this->razorpay->subscription->fetch($subscriptionId);
+        $subscription = Subscription::where('id', $subscriptionId)
+            ->where('user_id', $userId)
+            ->firstOrFail();
+
+        $razorpaySub = $this->razorpay->subscription->fetch($subscription->razorpay_subscription_id);
         $razorpaySub->resume();
 
-        return Subscription::where('razorpay_subscription_id', $subscriptionId)
-            ->where('user_id', $userId)
-            ->update(['status' => 'active']);
+        $subscription->update(['status' => 'pending_resume']);
+
+        return true;
     }
 }

@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Main\SidebarController;
+use App\Http\Controllers\RazorpayWebhookController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,3 +25,7 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function() {
     Route::get('sidebar',[SidebarController::class,'index']);
     Route::post('/chats/{chatId}/question', [ChatController::class, 'storeQuestion'])->name('api.v1.chats.storeMessage');
 });
+
+Route::post('v1/razorpay/webhook', [RazorpayWebhookController::class, 'handle'])
+    ->middleware('razorpay.webhook');
+

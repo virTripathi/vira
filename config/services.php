@@ -40,6 +40,7 @@ return [
     'razorpay' => [
         'key' => env('RAZORPAY_KEY_ID'),
         'secret' => env('RAZORPAY_KEY_SECRET'),
+        'webhook_secret' => env('RAZORPAY_WEBHOOK_SECRET'),
         'plan_ids' => [
             'monthly' => env('RAZORPAY_MONTHLY_PLAN_ID')
         ]

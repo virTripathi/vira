@@ -65,6 +65,7 @@ class SubscriptionController extends Controller
 
             return back()->with('success', 'Subscription paused successfully.');
         } catch (\Exception $e) {
+            dd($e);
             Log::error('Pause subscription error: ' . $e->getMessage());
 
             return back()->withErrors(['error' => 'Unable to pause subscription.']);

@@ -24,7 +24,10 @@ return new class extends Migration
                 'cancelled',   // manually cancelled
                 'failed',      // initial payment failed
                 'expired',     // ended after total_count
-                'paused'       // pause the subscription
+                'paused',      // pause the subscription
+                'pending_cancel', // Cancellation requested, webhook event not recieved
+                'pending_pause',  // Pause requested, webhook event not recieved
+                'pending_resume'  // Resume requested, webhook event not recieved  
             ])->default('pending');
             $table->timestamp('start_date')->nullable();
             $table->timestamp('end_date')->nullable();
