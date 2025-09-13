@@ -15,7 +15,7 @@ export function GuestNavbar({theme, toggleTheme}) {
         color="blue-gray"
         className="hidden md:block p-1 font-normal py-2 px-3 rounded-xl"
       >
-        <a href="#" className="flex items-center text-lg md:text-md font-bold text-black dark:text-white">
+        <a href="#use-cases" className="flex items-center text-lg md:text-md font-bold text-black dark:text-white">
           Use Cases
         </a>
       </Typography>
@@ -25,7 +25,7 @@ export function GuestNavbar({theme, toggleTheme}) {
         color="blue-gray"
         className="hidden md:block p-1 font-normal py-2 px-3 rounded-xl"
       >
-        <a href="#" className="flex items-center text-lg md:text-md font-bold text-black dark:text-white">
+        <a href="#pricing" className="flex items-center text-lg md:text-md font-bold text-black dark:text-white">
           Pricing
         </a>
       </Typography>

@@ -16,6 +16,7 @@ module.exports = withMT({
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            scrollBehavior: ['responsive'],
         },
     },
 

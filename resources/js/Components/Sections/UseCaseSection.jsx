@@ -15,7 +15,7 @@ export default function UseCaseSection({ useCases, className }) {
     }, [useCases.length]);
 
     return (
-        <section id="use_cases" className={className}>
+        <section id="use-cases" className={className}>
             <div className=" mx-auto max-w-screen-xl px-4 py-24 py-32 flex flex-col items-center justify-center">
                 <p className="mb-20 text-lg font-md tracking-wide">Use Cases</p> 
                 <div className="block flex flex-wrap gap-4 justify-center items-center mb-12">
