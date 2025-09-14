@@ -5,7 +5,7 @@ import { createRoot } from "react-dom/client";
 import { createInertiaApp } from "@inertiajs/react";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { ThemeProvider } from "./contexts/themeContext";
-import { ErrorProvider } from "@/Contexts/ErrorProvider";
+import { ErrorProvider } from "@/contexts/ErrorContext";
 
 const appName =
     window.document.getElementsByTagName("title")[0]?.innerText || "VIRA";
@@ -22,9 +22,9 @@ createInertiaApp({
 
         root.render(
             <ErrorProvider>
-            <ThemeProvider>
-                <App {...props} />
-            </ThemeProvider>
+                <ThemeProvider>
+                    <App {...props} />
+                </ThemeProvider>
             </ErrorProvider>
         );
     },

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Repositories\RepositoryBuilder;
 use App\Http\Services\ChatService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
@@ -28,6 +29,7 @@ class ChatController extends Controller
         $chat = $this->chatService->get($id);
 
         return Inertia::render('UserChatPage', [
+            'notifications' => Auth::user()->notifications, 
             'chat' => [
                 'id' => $chat->id,
                 'title' => $chat->title,
@@ -38,7 +40,7 @@ class ChatController extends Controller
                     'question' => $q->question,
                     'answer' => $q->latestAnswer ? $q->latestAnswer->answer : null,
                 ];
-            }),
+            })
         ]);
     }
 

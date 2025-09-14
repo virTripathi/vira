@@ -40,13 +40,6 @@ html {
     margin-left: auto;
 }
 
-#chat-area .next-possible-questions p {
-    background-color: #ffffff;
-    color: #333;
-    padding: 0.50rem 0.50rem 0.50rem 0.50rem;
-    border-radius: 1rem;
-    border: 1px dotted gray;
-}
 .abril-fatface-regular {
     font-family: "Abril Fatface", serif;
     font-weight: 600;

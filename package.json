@@ -25,6 +25,7 @@
         "@heroicons/react": "^2.1.5",
         "@material-tailwind/react": "^2.1.9",
         "date-fns": "^3.6.0",
+        "firebase": "^12.2.1",
         "react-day-picker": "^9.0.8",
         "react-speech-recognition": "^3.10.0",
         "regenerator-runtime": "^0.14.1"

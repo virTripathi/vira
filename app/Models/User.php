@@ -28,6 +28,7 @@ class User extends Authenticatable
         'google_access_token',
         'google_refresh_token',
         'google_token_expires_at',
+        'fcm_token'
     ];
 
     /**

@@ -1,5 +1,5 @@
 import { router } from "@inertiajs/react";
-import { useError } from "@/Contexts/ErrorProvider";
+import { useError } from "@/contexts/ErrorContext";
 
 export default function useSubscription() {
   const { addError } = useError();

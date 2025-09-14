@@ -10,6 +10,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\NotificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,6 +55,8 @@ Route::middleware(['auth', 'authorize:user'])->group(function () {
     Route::post('/subscription/{id}/cancel', [SubscriptionController::class, 'cancel'])->name('subscription.cancel');
     Route::post('/subscription/{id}/pause', [SubscriptionController::class, 'pause'])->name('subscription.pause');
     Route::post('/subscription/{id}/resume', [SubscriptionController::class, 'resume'])->name('subscription.resume');
+    Route::post('/notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.readAll');
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 });
 Route::get('/google/redirect', [GoogleCalendarController::class, 'redirect'])->name('google.redirect');
 Route::get('/google/callback', [GoogleCalendarController::class, 'callback'])->name('google.callback');

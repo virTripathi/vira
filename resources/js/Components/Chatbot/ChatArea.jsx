@@ -32,12 +32,12 @@ export default function ChatArea({ className, chats, questions, addQuestion, isA
             )}
 
             {questions.length > 0 && (
-                <section className="ms-2 me-2 mt-2 next-possible-questions flex max-w-96 flex-wrap gap-1">
+                <section className="ms-2 me-2 mt-2 flex max-w-96 flex-wrap gap-1">
                     {questions.map((q) => (
                         <p
                             key={q.id}
                             onClick={() => addQuestion(q.id)}
-                            className="ms-1 mt-1 w-auto text-xs hover:cursor-pointer"
+                            className="border rounded-full p-2 ms-1 mt-1 w-auto text-xs hover:cursor-pointer opacity-80"
                         >
                             {q.question}
                         </p>

@@ -1,6 +1,8 @@
 import Dropdown from "@/Components/Dropdown";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import Logo from "../Logo";
+import NotificationDropdown from "../NotificationDropdown";
+import { usePage } from "@inertiajs/react";
 
 export default function Navbar({
     user,
@@ -8,8 +10,9 @@ export default function Navbar({
     showingSidebar,
     setShowingSidebar,
 }) {
+    const { notifications } = usePage().props;
     return (
-        <nav className="border-b border-gray-100">
+        <nav className="border-b dark:border-gray-800 border-gray-200">
             <div className="p-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2">
@@ -39,8 +42,11 @@ export default function Navbar({
                         </div>
                     </div>
 
-                    <div className="sm:flex sm:items-center sm:ml-6">
-                        <div className="ml-3 relative">
+                    <div className="flex sm:items-center sm:ml-6 md:gap-4">
+                        <div className="md:ml-3 ml-2 relative">
+                        <NotificationDropdown notifications={notifications} />
+                        </div>
+                        <div className="md:ml-3 ml-2 relative">
                             <Dropdown>
                                 <Dropdown.Trigger>
                                     <span className="inline-flex rounded-md">
