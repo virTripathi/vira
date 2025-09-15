@@ -14,8 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::create('chat_questions', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('chat_id')->nullable()->constrained('chats')->onDelete('cascade');
+            $table->uuid('id')->primary();
+            $table->uuid('chat_id')->nullable();
+            $table->foreign('chat_id')->references('id')->on('chats')->onDelete('cascade');
             $table->text('question');
             $table->boolean('is_default')->default(false);
             $table->timestamps();

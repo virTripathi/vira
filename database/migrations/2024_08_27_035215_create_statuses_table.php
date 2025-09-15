@@ -14,13 +14,13 @@ return new class extends Migration
     public function up()
     {
         Schema::create('statuses', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('code');
             $table->string('title');
             $table->boolean('is_active')->default(1);
-            $table->unsignedBigInteger('created_by');
+            $table->uuid('created_by');
             $table->foreign('created_by')->references('id')->on('users');
-            $table->unsignedBigInteger('updated_by')->nullable();
+            $table->uuid('updated_by')->nullable();
             $table->foreign('updated_by')->references('id')->on('users');
             $table->timestamps();
         });

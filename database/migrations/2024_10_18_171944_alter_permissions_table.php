@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('permissions', function (Blueprint $table) {
-            $table->unsignedBigInteger('module_id')->nullable();
+            $table->uuid('module_id')->nullable();
             $table->foreign('module_id')->references('id')->on('modules');
         });
     }

@@ -14,14 +14,14 @@ return new class extends Migration
     public function up()
     {
         Schema::create('modules', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('title');
             $table->string('description',256)->nullable();
-            $table->unsignedBigInteger('status_id')->default(1);
+            $table->uuid('status_id');
             $table->foreign('status_id')->references('id')->on('statuses');
-            $table->unsignedBigInteger('created_by');
+            $table->uuid('created_by');
             $table->foreign('created_by')->references('id')->on('users');
-            $table->unsignedBigInteger('updated_by')->nullable();
+            $table->uuid('updated_by')->nullable();
             $table->foreign('updated_by')->references('id')->on('users');
             $table->timestamps();
         });

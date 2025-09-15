@@ -14,13 +14,16 @@ return new class extends Migration
     public function up()
     {
         Schema::create('task_frequency_units', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('title');
             $table->enum('value',['second','minute','hour','day','month','year']);
-            $table->foreignId('status_id')->constrained('statuses')->onDelete('cascade');
+            $table->uuid('status_id');
+            $table->foreign('status_id')->references('id')->on('statuses')->onDelete('cascade');
             $table->timestamps();
-            $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
-            $table->foreignId('updated_by')->constrained('users')->onDelete('cascade');
+            $table->uuid('created_by');
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+            $table->uuid('updated_by');
+            $table->foreign('updated_by')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

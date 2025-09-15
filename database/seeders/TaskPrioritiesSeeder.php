@@ -18,9 +18,8 @@ class TaskPrioritiesSeeder extends Seeder
      */
     public function run()
     {
-        if(!TaskPriority::find(1)) {
+        if(!TaskPriority::where('code','low')->first()) {
             $taskPriority = new TaskPriority();
-            $taskPriority->id = 1;
             $taskPriority->code = 'low';
             $taskPriority->title = 'Low';
             $taskPriority->status_id = Status::active()->id;
@@ -28,9 +27,8 @@ class TaskPrioritiesSeeder extends Seeder
             $taskPriority->created_at = Carbon::now();
             $taskPriority->save();
          }
-         if(!TaskPriority::find(2)) {
+         if(!TaskPriority::where('code','medium')->first()) {
              $taskPriority = new TaskPriority();
-             $taskPriority->id = 2;
              $taskPriority->code = 'medium';
              $taskPriority->title = 'Medium';
              $taskPriority->status_id = Status::active()->id;
@@ -38,9 +36,8 @@ class TaskPrioritiesSeeder extends Seeder
              $taskPriority->created_at = Carbon::now();
              $taskPriority->save();
           }
-          if(!TaskPriority::find(3)) {
+          if(!TaskPriority::where('code','high')->first()) {
               $taskPriority = new TaskPriority();
-              $taskPriority->id = 3;
               $taskPriority->code = 'high';
               $taskPriority->title = 'High';
               $taskPriority->status_id = Status::active()->id;

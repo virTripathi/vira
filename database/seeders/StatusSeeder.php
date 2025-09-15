@@ -17,9 +17,8 @@ class StatusSeeder extends Seeder
      */
     public function run()
     {
-        if(!Status::find(1)) {
+        if(!Status::where('code','active')->first()) {
            $status = new Status();
-           $status->id = 1;
            $status->code = 'active';
            $status->title = 'Active';
            $status->is_active = 1;
@@ -27,9 +26,8 @@ class StatusSeeder extends Seeder
            $status->created_at = Carbon::now();
            $status->save();
         }
-        if(!Status::find(2)) {
+        if(!Status::where('code','in-active')->first()) {
             $status = new Status();
-            $status->id = 2;
             $status->code = 'in-active';
             $status->title = 'Inactive';
             $status->is_active = 0;

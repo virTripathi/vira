@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('modules', function (Blueprint $table) {
-            $table->unsignedBigInteger('master_module_id')->nullable();
+            $table->uuid('master_module_id')->nullable();
             $table->foreign('master_module_id')->references('id')->on('master_modules');
         });
     }

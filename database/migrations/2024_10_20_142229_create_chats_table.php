@@ -14,8 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::create('chats', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->uuid('id')->primary();
+            $table->uuid('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('title')->nullable(); // e.g. "Support Chat - Aug 2025"
             $table->enum('status', ['processing', 'completed'])->default('processing'); // replaces chat_activities
             $table->timestamps();
