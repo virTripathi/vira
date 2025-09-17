@@ -44,10 +44,12 @@ class TaskController extends Controller {
 
     public function store(TaskRequest $request)
     {
+        Log::info('Creating task: ' . $request->get('title'));
         try {
             $taskId = $this->task->save($request);
             return redirect()->route('tasks.index')->with('success', 'Task created successfully');
         } catch (\Exception $e) {
+            Log::error('Error creating task: ' . $e->getMessage(), ['stack' => $e->getTraceAsString()]);
             return redirect()->back()->withInput()->withErrors(['error' => 'OOPS! Some error occurred']);
         }
     }

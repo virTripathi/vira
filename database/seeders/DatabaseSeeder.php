@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             StatusSeeder::class,
             RolesTableSeeder::class,
             TaskPrioritiesSeeder::class,
+            TaskFrequencyUnitSeeder::class,
             // Add other seeders as needed
         ]); 
     }

@@ -6,7 +6,6 @@ use App\Models\Main\Role;
 use App\Models\Status;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
  
 class RolesTableSeeder extends Seeder
