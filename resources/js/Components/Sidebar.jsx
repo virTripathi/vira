@@ -9,12 +9,11 @@ import {
     AccordionHeader,
     AccordionBody,
 } from "@material-tailwind/react";
-import { ChevronRightIcon, ChevronDownIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 import NavLink from "@/Components/NavLink";
 
 export default function Sidebar({
     className,
-    showingSidebar,
     onSetShowingSidebar,
     user,
     configLoader,
@@ -41,7 +40,6 @@ export default function Sidebar({
         <Card
             className={`${className} bg-white dark:bg-black text-gray-950 dark:text-white fixed z-10 h-[100vh] transition-all lg:w-[20rem] max-w-[80vw] lg:max-w-[20rem] p-4 shadow-xl shadow-blue-gray-950/5 rounded-none`}
         >
-            {/* Header */}
             <div className="flex justify-between items-center">
                 <div className="mb-2 p-1">
                     <img
@@ -71,7 +69,6 @@ export default function Sidebar({
                 </button>
             </div>
 
-            {/* Sidebar items */}
             <List className="min-w-0">
                 <NavLink href={route("chats.index")}>
                     <ListItem className="bg-black text-white">

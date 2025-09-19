@@ -5,19 +5,19 @@ namespace App\Http\Controllers\TaskManagement;
 use App\Http\Controllers\Controller;
 use App\Http\Repositories\RepositoryBuilder;
 use App\Http\Requests\TaskRequest;
-use Carbon\Carbon;
+use App\Models\TaskFrequencyUnit;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
-
-class TaskController extends Controller {
-    
+class TaskController extends Controller
+{
     private $task;
     private $status;
     private $taskPriority;
-    function __construct() {
+
+    public function __construct()
+    {
         $repository = new RepositoryBuilder();
         $this->task = $repository->build("TaskManagement\\Task");
         $this->status = $repository->build("Main\\Status");
@@ -25,8 +25,9 @@ class TaskController extends Controller {
     }
 
     public function index(Request $request)
-    { 
+    {
         $tasks = $this->task->all($request->input());
+
         return Inertia::render('TaskManager/Index', [
             'tasks' => $tasks,
         ]);
@@ -34,64 +35,73 @@ class TaskController extends Controller {
 
     public function create()
     {
-        $statuses = $this->status->all();
-        $taskPriorities = $this->taskPriority->all();
-        return Inertia::render('TaskManager/TaskForm',[
-            'statuses' => $statuses,
-            'taskPriorities' => $taskPriorities
+        return Inertia::render('TaskManager/TaskForm', [
+            'statuses' => $this->status->all(),
+            'taskPriorities' => $this->taskPriority->all(),
+            'frequencyUnits' => TaskFrequencyUnit::all(),
         ]);
     }
 
     public function store(TaskRequest $request)
     {
         Log::info('Creating task: ' . $request->get('title'));
+
         try {
-            $taskId = $this->task->save($request);
+            $taskId = $this->task->save($request->validated());
             return redirect()->route('tasks.index')->with('success', 'Task created successfully');
         } catch (\Exception $e) {
-            Log::error('Error creating task: ' . $e->getMessage(), ['stack' => $e->getTraceAsString()]);
-            return redirect()->back()->withInput()->withErrors(['error' => 'OOPS! Some error occurred']);
+            Log::error('Error creating task: ' . $e->getMessage(), [
+                'stack' => $e->getTraceAsString(),
+            ]);
+            return redirect()->back()->withInput()->withErrors([
+                'error' => 'OOPS! Some error occurred',
+            ]);
         }
     }
 
-
-    public function show($task_id) 
+    public function show($taskId)
     {
-        $task = $this->task->get($task_id);
         return Inertia::render('TaskManager/Task', [
-            'task' => $task
+            'task' => $this->task->get($taskId),
         ]);
     }
 
-    public function edit($task_id)
+    public function edit($taskId)
     {
-        $task = $this->task->get($task_id);
-        $statuses = $this->status->all();
-        $taskPriorities = $this->taskPriority->all();
         return Inertia::render('TaskManager/TaskForm', [
-            'task' => $task,
-            'statuses' => $statuses,
-            'taskPriorities' => $taskPriorities
+            'task' => $this->task->get($taskId),
+            'statuses' => $this->status->all(),
+            'taskPriorities' => $this->taskPriority->all(),
         ]);
     }
 
-    public function update($task_id, TaskRequest $request)
+    public function update($taskId, TaskRequest $request)
     {
-        try{
-            $task = $this->task->update($task_id,$request);
+        Log::info("Updating task ID: {$taskId}");
+
+        try {
+            $this->task->update($taskId, $request->validated());
             return redirect()->route('tasks.index')->with('success', 'Task updated successfully');
-        } catch(\Exception $e) {
-            return redirect()->back()->withInput()->withErrors(['error' => 'OOPS! Some error occurred']);
+        } catch (\Exception $e) {
+            Log::error("Error updating task ID {$taskId}: " . $e->getMessage());
+            return redirect()->back()->withInput()->withErrors([
+                'error' => 'OOPS! Some error occurred',
+            ]);
         }
     }
 
     public function destroy($taskId)
     {
-        try{
-            $this->task->delete();
+        Log::info("Deleting task ID: {$taskId}");
+
+        try {
+            $this->task->delete($taskId);
             return redirect()->route('tasks.index')->with('success', 'Task deleted successfully');
-        } catch(\Exception $e) {
-            return redirect()->back()->withInput()->withErrors(['error' => 'OOPS! Some error occurred']);
+        } catch (\Exception $e) {
+            Log::error("Error deleting task ID {$taskId}: " . $e->getMessage());
+            return redirect()->back()->withInput()->withErrors([
+                'error' => 'OOPS! Some error occurred',
+            ]);
         }
     }
 }

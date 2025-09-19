@@ -8,8 +8,6 @@ class TaskRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
     public function authorize()
     {
@@ -24,11 +22,17 @@ class TaskRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required',
-            'description' => 'nullable|string:500',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string|max:500',
             'due_date' => 'required|date',
             'status_id' => 'required|exists:statuses,id',
-            'task_priority_id' => 'required|exists:task_priorities,id'
+            'task_priority_id' => 'nullable|exists:task_priorities,id',
+            'task_frequency_unit_id' => 'nullable|exists:task_frequency_units,id',
+            'task_frequency_unit_value' => 'nullable|integer|min:1',
+            'start_time' => 'nullable|date',
+            'end_time' => 'nullable|date|after_or_equal:start_time',
+            'times' => 'nullable|date',
+            'user_id' => 'nullable|exists:users,id',
         ];
     }
 }
