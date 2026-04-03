@@ -22,14 +22,13 @@ export default function AuthenticatedLayout({
     );
 
     const floatingAction = showFloatingAction && (
-        <div className="fixed bottom-0 right-0 p-4">
+        <div className="fixed bottom-4 right-4 flex flex-col items-end gap-3 z-30">
             {voiceControlEnabled && (
                 <VoiceControl onClick={toggleVoiceControl} />
             )}
-            <VoiceSquare
-                onClick={toggleVoiceControl}
-                className="float-right h-12 w-12 hover:cursor-pointer"
-            />
+            <div className="fab-button" onClick={toggleVoiceControl} role="button" aria-label="Toggle voice assistant">
+                <VoiceSquare className="h-6 w-6" />
+            </div>
         </div>
     );
 

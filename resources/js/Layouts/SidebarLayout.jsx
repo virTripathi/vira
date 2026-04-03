@@ -12,15 +12,21 @@ export default function SidebarLayout({
 }) {
     const { auth } = usePage().props;
 
-    async function loadGeneralUserSidebar(user) {
-        const res = await fetch("/api/v1/chats");
-        const chats = await res.json();
-        return chats.map((chat) => ({
+    const loadGeneralUserSidebar = async (user, page = 1) => {
+        const res = await fetch(`/api/v1/chats?page=${page}`);
+        const json = await res.json();
+        const chats = Array.isArray(json) ? json : json.data || [];
+        const lastPage = Array.isArray(json) ? 1 : json.last_page || 1;
+        const currentPage = Array.isArray(json) ? 1 : json.current_page || 1;
+
+        const mapped = chats.map((chat) => ({
             label: chat.title,
-             route: 'chats.show',
+            route: 'chats.show',
             params: { id: chat.id },
         }));
-    }
+        
+        return { items: mapped, lastPage, page: currentPage };
+    };
 
     function loadRoleSidebar(user) {
         // Extract role titles
@@ -40,23 +46,22 @@ export default function SidebarLayout({
                 content={sidebarContent}
                 showingSidebar={showingSidebar}
                 onSetShowingSidebar={setShowingSidebar}
-                className={(showingSidebar ? "-left-[80vw]" : "left-0") + ""}
+                className={showingSidebar ? "-translate-x-full" : "translate-x-0"}
                 user={auth.user}
-                configLoader={(user) => {
-                    const roles =
-                        user.roles?.map((r) => r.title.toLowerCase()) || [];
+                configLoader={async (user, page = 1) => {
+                    const roles = user.roles?.map((r) => r.title.toLowerCase()) || [];
                     if (roles.includes("general user")) {
-                        return loadGeneralUserSidebar(user);
+                        return await loadGeneralUserSidebar(user, page);
                     }
-                    return loadRoleSidebar(user);
+                    return { items: loadRoleSidebar(user), lastPage: 1, page: 1 };
                 }}
             />
 
             <div
-                className={`transition-all w-full ${
+                className={`transition-all duration-300 w-full ${
                     showingSidebar
                         ? ""
-                        : "relative lg:left-[20rem] lg:w-[calc(100%-20rem)] lg:max-w-[calc(100%-20rem)]"
+                        : "lg:pl-[20rem]"
                 }`}
             >
                 {navbar}

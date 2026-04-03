@@ -15,9 +15,9 @@ class ChatService
 {
     function __construct() {}
 
-    public function all()
+    public function all($page = 1)
     {
-        return Auth::user()->chats;
+        return Auth::user()->chats()->orderBy('updated_at', 'desc')->paginate(15, ['*'], 'page', $page);
     }
 
     public function get($id)
@@ -49,8 +49,9 @@ class ChatService
                 'status'   => 'processing'
             ]);
             Log::info('New chat question created: ' . $chatQuestion->id);
-            DB::afterCommit(function () use ($chatQuestion) {
+            DB::afterCommit(function () use ($chatQuestion, $chat, $question) {
                 GenerateAiAnswerJob::dispatch($chatQuestion);
+                \App\Jobs\GenerateChatTitleJob::dispatch($chat, $question);
             });
 
             return $chat;
@@ -98,7 +99,7 @@ class ChatService
         return DB::transaction(function () use ($chatId, $question) {
             $chat = Chat::findOrFail($chatId);
 
-            $existingQuestion = ChatQuestion::whereRaw('LOWER(question) = ?', [strtolower($question['question'])])->first();
+            $existingQuestion = ChatQuestion::where('chat_id', $chatId)->whereRaw('LOWER(question) = ?', [strtolower($question['question'])])->first();
 
             if ($existingQuestion) {
                 $answer = $existingQuestion->latestAnswer->answer;

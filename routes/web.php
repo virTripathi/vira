@@ -41,7 +41,7 @@ Route::middleware(['auth', 'verified', 'authorize:admin'])->group(function () {
 
 
 Route::middleware(['auth', 'authorize:user'])->group(function () {
-    Route::resource('tasks', TaskController::class);
+    // Route::resource('tasks', TaskController::class);
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

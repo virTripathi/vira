@@ -7,10 +7,11 @@ use App\Models\Status;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Chat extends MainModel
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'user_id',
@@ -39,7 +40,7 @@ class Chat extends MainModel
 
     public function questions()
     {
-        return $this->hasMany(ChatQuestion::class);
+        return $this->hasMany(ChatQuestion::class)->orderBy('id', 'asc');
     }
 
     public function creator()
