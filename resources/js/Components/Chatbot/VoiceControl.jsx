@@ -10,16 +10,17 @@ export default function VoiceControl({ className, onClick, defaultQuestions = []
   } = useChatManager(defaultQuestions);
 
   return (
-    <div className={`transition-opacity ${className}`}>
-      <div className="relative flex flex-col rounded-xl">
+    <div className={`voice-widget transition-opacity mb-3 ${className ?? ""}`}>
+      <div className="relative flex flex-col" style={{ width: "22rem", maxWidth: "90vw" }}>
         <Header onClick={onClick} />
         <ChatArea
           chats={chats}
-          defaultQuestions={questions}
+          questions={questions}
           addQuestion={addQuestion}
           isAnswerPending={isAnswerPending}
           onNewAnswer={handleNewAnswer}
-          className={'chat-area overflow-y-auto w-inherit max-w-96 h-60 min-h-60'}
+          className="overflow-y-auto"
+          style={{ height: "240px" }}
         />
         <InputForm onSubmit={handleInput} disabled={inputDisabled} />
       </div>

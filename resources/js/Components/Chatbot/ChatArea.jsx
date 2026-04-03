@@ -1,20 +1,27 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
-export default function ChatArea({ className, chats, questions, addQuestion, isAnswerPending }) {
+export default function ChatArea({ className, chats, questions, addQuestion, isAnswerPending, isQuotaExpired }) {
+    const bottomRef = useRef(null);
+
+    // Auto-scroll to newest message
+    useEffect(() => {
+        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [chats, isAnswerPending]);
+
     return (
-        <div id="chat-area" className={className}>
+        <div id="chat-area" className={className} style={{ display: "flex", flexDirection: "column" }}>
             {chats.map((chat, index) =>
                 chat.user === "system" ? (
                     <div
-                        key={index}
-                        className="system ms-2 me-2 mt-4 rounded-[18px] px-4 py-1.5 text-gray-950 dark:text-white"
+                        key={chat.id || `sys_${index}`}
+                        className="system ms-3 me-3 mt-3"
                     >
                         {chat.message}
                     </div>
                 ) : (
                     <div
-                        key={index}
-                        className="w-fit user ms-2 me-2 mt-4 dark:bg-gray-950 bg-gray-100 dark:text-white text-black rounded-[18px] px-4 py-1.5"
+                        key={chat.id || `usr_${index}`}
+                        className="user ms-3 me-3 mt-3"
                     >
                         {chat.message}
                     </div>
@@ -22,28 +29,30 @@ export default function ChatArea({ className, chats, questions, addQuestion, isA
             )}
 
             {isAnswerPending && (
-                <div className="system ms-2 me-2 mt-4">
-                    <div className="flex gap-1 w-fit">
-                        <div className="rounded-full w-[8px] h-[8px] animate-pulse bg-gray-800"></div>
-                        <div className="rounded-full w-[8px] h-[8px] animate-pulse bg-gray-800 delay-500"></div>
-                        <div className="rounded-full w-[8px] h-[8px] animate-pulse bg-gray-800 delay-1000"></div>
+                <div className="system ms-3 me-3 mt-3">
+                    <div style={{ display: "flex", gap: "5px", alignItems: "center", padding: "2px 0" }}>
+                        <div className="typing-dot" />
+                        <div className="typing-dot" />
+                        <div className="typing-dot" />
                     </div>
                 </div>
             )}
 
             {questions.length > 0 && (
-                <section className="ms-2 me-2 mt-2 flex max-w-96 flex-wrap gap-1">
+                <section className={`ms-3 me-3 mt-3 flex flex-wrap gap-2 ${isQuotaExpired ? "opacity-70 pointer-events-none" : ""}`}>
                     {questions.map((q) => (
                         <p
                             key={q.id}
                             onClick={() => addQuestion(q.id)}
-                            className="border rounded-full p-2 ms-1 mt-1 w-auto text-xs hover:cursor-pointer opacity-80"
+                            className="question-chip"
                         >
                             {q.question}
                         </p>
                     ))}
                 </section>
             )}
+
+            <div ref={bottomRef} />
         </div>
     );
 }

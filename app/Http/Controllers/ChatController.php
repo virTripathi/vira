@@ -66,8 +66,10 @@ class ChatController extends Controller
 
     public function update(Request $request, $id)
     {
-        $data = $request->all();
-        return $this->chatService->update($id, $data);
+        $validatedData = $request->validate([
+            'title' => 'string|max:255',
+        ]);
+        return $this->chatService->update($id, $validatedData);
     }
 
     public function delete($id)
@@ -76,9 +78,9 @@ class ChatController extends Controller
     }
 
     public function storeQuestion($chatId, Request $request) {
-        $request->validate([
-            'question' => 'string'
+        $validatedData = $request->validate([
+            'question' => 'required|string'
         ]);
-        return $this->chatService->storeQuestion($chatId, $request->all());
+        return $this->chatService->storeQuestion($chatId, $validatedData);
     }
 }

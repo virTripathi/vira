@@ -33,68 +33,123 @@ class GoogleAIStudioRepository
      */
     public function ask(string $question, $user): ?array
     {
-        try {
-            $payload = [
-                'contents' => [[
-                    'role' => 'user',
-                    'parts' => [
-                        ['text' => config('ai-studio.core_prompt')],
-                        ['text' => 'CurrentDateAndTime: ' . Carbon::now()->toISOString()],
-                        ['text' => 'Current week day: ' . Carbon::now()->format('l')],
-                        ['text' => 'Parse relative dates and times'],
-                        ['text' => $question]
-                    ],
-                ]],
-                'tools' => $this->buildTools(),
-            ];
+        $maxRetries = (int) config('ai-studio.max_retries', env('AGENT_MAX_RETRIES', 3));
+        $retryDelay = 1000; // milliseconds
+        $attempt = 0;
 
-            Log::info("Asking GoogleAIStudio: " . json_encode($payload));
-
-            $response = $this->client->post($this->baseUrl, [
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                    'x-goog-api-key' => $this->apiKey,
+        $payload = [
+            'contents' => [[
+                'role' => 'user',
+                'parts' => [
+                    ['text' => config('ai-studio.core_prompt')],
+                    ['text' => 'Parse relative dates and times'],
+                    ['text' => 'CurrentDateAndTime: ' . Carbon::now()->toISOString()],
+                    ['text' => 'Current week day: ' . Carbon::now()->format('l')],
+                    ['text' => $question]
                 ],
-                'json' => $payload,
-            ]);
+            ]],
+            'tools' => $this->buildTools(),
+        ];
 
-            $responseData = json_decode($response->getBody()->getContents(), true);
+        while ($attempt < $maxRetries) {
+            try {
+                Log::info("Asking GoogleAIStudio (Attempt " . ($attempt + 1) . "): " . json_encode($payload));
 
-            Log::info("GoogleAIStudio raw response: " . json_encode($responseData));
+                $response = $this->client->post($this->baseUrl, [
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                        'x-goog-api-key' => $this->apiKey,
+                    ],
+                    'json' => $payload,
+                ]);
 
-            // Try functionCall first
-            $functionCall = $this->handleFunctionCall($responseData);
-            if ($functionCall) {
-                $data = $this->executeFunctionCall($functionCall, $user);
-                Log::info('data', $data);
-                $responseText = $this->buildTextResponse($functionCall['name'],$data);
+                $responseData = json_decode($response->getBody()->getContents(), true);
+
+                if (isset($responseData['error']) && isset($responseData['error']['code'])) {
+                    if ($responseData['error']['code'] == 503) {
+                        throw new \Exception("GoogleAIStudio overloaded: 503");
+                    }
+                    if ($responseData['error']['code'] == 429) {
+                        Log::warning("GoogleAIStudio 429 error, quota exceeded.");
+                        return [
+                            'type' => 'text',
+                            'data' => 'The AI quota for today has been expired.'
+                        ];
+                    }
+                }
+
+                Log::info("GoogleAIStudio raw response: " . json_encode($responseData));
+
+                // Try functionCall first
+                $functionCall = $this->handleFunctionCall($responseData);
+                if ($functionCall) {
+                    $data = $this->executeFunctionCall($functionCall, $user);
+                    Log::info('data', $data);
+                    $responseText = $this->buildTextResponse($functionCall['name'],$data);
+                    return [
+                        'type' => 'function',
+                        'data' => $responseText,
+                    ];
+                }
+
+                // Else return plain text
+                $text = $this->handleTextResponse($responseData);
+
+                if ($text) {
+                    return [
+                        'type' => 'text',
+                        'data' => $text,
+                    ];
+                }
+
                 return [
-                    'type' => 'function',
-                    'data' => $responseText,
+                    'type' => 'error',
+                    'data' => 'Unexpected Gemini response format',
                 ];
+            } catch (RequestException $e) {
+                $statusCode = $e->hasResponse() ? $e->getResponse()->getStatusCode() : 0;
+                
+                if ($statusCode === 429 || str_contains($e->getMessage(), '"code": 429') || str_contains($e->getMessage(), '"code":429')) {
+                    Log::warning("GoogleAIStudio 429 error, quota exceeded.");
+                    return [
+                        'type' => 'text',
+                        'data' => 'The AI quota for today has been expired.'
+                    ];
+                }
+
+                if ($statusCode === 503 || str_contains($e->getMessage(), '"code": 503') || str_contains($e->getMessage(), '"code":503')) {
+                    $attempt++;
+                    if ($attempt >= $maxRetries) {
+                        Log::error("GoogleAIStudio RequestException after {$maxRetries} attempts: " . $e->getMessage(), [$e]);
+                        break;
+                    }
+                    Log::warning("GoogleAIStudio 503 error, retrying ($attempt/$maxRetries)...");
+                    usleep($retryDelay * 1000);
+                    $retryDelay *= 2; // exponential backoff
+                    continue;
+                }
+
+                Log::error("GoogleAIStudio RequestException: " . $e->getMessage(), [$e]);
+                return null;
+            } catch (\Exception $e) {
+                if ($e->getMessage() === "GoogleAIStudio overloaded: 503") {
+                    $attempt++;
+                    if ($attempt >= $maxRetries) {
+                        Log::error("GoogleAIStudio error after {$maxRetries} attempts: " . $e->getMessage(), [$e]);
+                        break;
+                    }
+                    Log::warning("GoogleAIStudio 503 error, retrying ($attempt/$maxRetries)...");
+                    usleep($retryDelay * 1000);
+                    $retryDelay *= 2; // exponential backoff
+                    continue;
+                }
+
+                Log::error("GoogleAIStudio error: " . $e->getMessage(), [$e]);
+                return null;
             }
-
-            // Else return plain text
-            $text = $this->handleTextResponse($responseData);
-
-            if ($text) {
-                return [
-                    'type' => 'text',
-                    'data' => $text,
-                ];
-            }
-
-            return [
-                'type' => 'error',
-                'data' => 'Unexpected Gemini response format',
-            ];
-        } catch (RequestException $e) {
-            Log::error("GoogleAIStudio RequestException: " . $e->getMessage(), [$e]);
-            return null;
-        } catch (\Exception $e) {
-            Log::error("GoogleAIStudio error: " . $e->getMessage(), [$e]);
-            return null;
         }
+
+        return null;
     }
 
     private function buildTools(): array

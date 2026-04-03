@@ -6,7 +6,7 @@ import SpeechRecognition, {
     useSpeechRecognition,
 } from "react-speech-recognition";
 
-export default function InputForm({ onSubmit, disabled }) {
+export default function InputForm({ onSubmit, disabled, isQuotaExpired, quotaRecoveryMessage }) {
     const { transcript, resetTranscript, browserSupportsSpeechRecognition } =
         useSpeechRecognition();
 
@@ -18,10 +18,11 @@ export default function InputForm({ onSubmit, disabled }) {
     const [isListening, setIsListening] = useState(false);
     const [inputValue, setInputValue] = useState("");
     const silenceTimer = useRef(null);
+    const inputRef = useRef(null);
 
-    const submitAndClear = (inputValue) => {
-        if (inputValue && inputValue !== "") {
-            onSubmit(inputValue);
+    const submitAndClear = (value) => {
+        if (value && value.trim() !== "") {
+            onSubmit(value.trim());
             setInputValue("");
             SpeechRecognition.stopListening();
             setIsListening(false);
@@ -30,10 +31,7 @@ export default function InputForm({ onSubmit, disabled }) {
     };
 
     const startListening = () => {
-        SpeechRecognition.startListening({
-            continuous: true,
-            language: "en-IN",
-        });
+        SpeechRecognition.startListening({ continuous: true, language: "en-IN" });
     };
 
     const stopListening = () => {
@@ -51,11 +49,8 @@ export default function InputForm({ onSubmit, disabled }) {
     };
 
     const resetSilenceTimer = () => {
-        if (silenceTimer.current) {
-            clearTimeout(silenceTimer.current);
-        }  
+        if (silenceTimer.current) clearTimeout(silenceTimer.current);
         silenceTimer.current = setTimeout(() => {
-        
             submitAndClear(transcript);
             stopListening();
         }, 2000);
@@ -63,65 +58,64 @@ export default function InputForm({ onSubmit, disabled }) {
 
     useEffect(() => {
         setInputValue(transcript);
-        if (transcript && isListening) {
-            resetSilenceTimer();
-        }
+        if (transcript && isListening) resetSilenceTimer();
     }, [transcript, isListening]);
 
     useEffect(() => {
         return () => {
-            if (silenceTimer.current) {
-                clearTimeout(silenceTimer.current);
-            }
+            if (silenceTimer.current) clearTimeout(silenceTimer.current);
         };
     }, []);
 
-    const handleInputChange = (e) => {
-        setInputValue(e.target.value);
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            submitAndClear(inputValue);
+        }
     };
 
     return (
-        <form className="mt-8 mb-2 p-4">
-            <div className="mb-1 flex gap-2 justify-center items-center p-2 border-2 rounded-full">
-                <div className="w-full min-w-[200px]">
-                    <div className="relative">
-                        <input
-                            type="text"
-                            className="w-full bg-transparent placeholder:text-gray-400 text-gray-700 text-sm pl-3 pr-10 py-2 transition duration-300 ease focus:outline-none border-none focus:outline-none focus:ring-0"
-                            placeholder="Enter your text"
-                            readOnly={disabled}
-                            value={inputValue}
-                            onChange={handleInputChange}
-                        />
-                        <button
-                            className="bg-gray-800 absolute right-1 top-1 rounded bg-black p-1.5 border border-transparent text-center text-sm text-white transition-all shadow-sm hover:shadow focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:cursor-not-allowed"
-                            type="button"
-                            disabled={disabled ?? false}
-                            onClick={() => submitAndClear(inputValue)}
-                        >
-                            <SendIcon
-                                className="h-4 w-4"
-                                color="white"
-                            />
-                        </button>
-                    </div>
+        <form
+            className="px-4 pb-4 pt-2"
+            onSubmit={(e) => { e.preventDefault(); submitAndClear(inputValue); }}
+        >
+            {isQuotaExpired && (
+                <div className="text-center text-xs text-red-500 mb-2 font-medium tracking-wide">
+                    {quotaRecoveryMessage || "The AI quota for today has been expired."}
                 </div>
+            )}
+            <div className="chat-input-wrapper">
+                <input
+                    ref={inputRef}
+                    type="text"
+                    className="flex-1 bg-transparent text-sm text-gray-800 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-500 outline-none border-none focus:ring-0 min-w-0"
+                    placeholder="Ask me anything…"
+                    readOnly={disabled}
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                />
+
                 <button
-                    className="bg-gray-800 rounded bg-black p-1.5 border border-transparent text-center text-sm text-white transition-all shadow-sm hover:shadow focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:cursor-not-allowed"
+                    className="chat-send-btn"
+                    type="submit"
+                    disabled={disabled ?? false}
+                    aria-label="Send message"
+                >
+                    <SendIcon className="h-3.5 w-3.5" color="white" />
+                </button>
+
+                <button
+                    className={`chat-mic-btn ${isListening ? "listening" : ""}`}
                     type="button"
                     onClick={toggleListening}
                     disabled={disabled ?? false}
+                    aria-label={isListening ? "Stop listening" : "Start voice input"}
                 >
                     {isListening ? (
-                        <CloseMicrophoneIcon
-                            className="h-4 w-4"
-                            color="white"
-                        />
+                        <CloseMicrophoneIcon className="h-3.5 w-3.5" color="white" />
                     ) : (
-                        <Microphone
-                            className="h-4 w-4"
-                            color="white"
-                        />
+                        <Microphone className="h-3.5 w-3.5" color="white" />
                     )}
                 </button>
             </div>

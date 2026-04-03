@@ -1,7 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import echo from "../Services/echo";
 
 export default function useChatListener(userId, onAnswer) {
+    const onAnswerRef = useRef(onAnswer);
+
+    // Keep the latest callback reference without recreating the listener
+    useEffect(() => {
+        onAnswerRef.current = onAnswer;
+    }, [onAnswer]);
+
     useEffect(() => {
         console.log("Setting up chat listener for userId:", userId);
 
@@ -9,14 +16,12 @@ export default function useChatListener(userId, onAnswer) {
 
         const channelName = `user.${userId}`;
 
-        const channel = echo
-            .private(channelName)
-            .listen(".AnswerGeneratedEvent", (data) => {
-                console.log(data);
-                onAnswer?.(data);
-            })
-            .listen("*", (event, data) => {
-            });
+        const channel = echo.private(channelName);
+        
+        channel.listen(".AnswerGeneratedEvent", (data) => {
+            console.log(data);
+            onAnswerRef.current?.(data);
+        });
 
         // Add connection listeners for debugging
         channel.subscription
@@ -32,7 +37,8 @@ export default function useChatListener(userId, onAnswer) {
 
         return () => {
             console.log("Cleaning up channel:", channelName);
+            channel.stopListening(".AnswerGeneratedEvent");
             echo.leave(channelName);
         };
-    }, [userId, onAnswer]);
+    }, [userId]);
 }

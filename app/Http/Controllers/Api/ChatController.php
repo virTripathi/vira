@@ -18,9 +18,10 @@ class ChatController extends Controller
         $this->chatService = $chatService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json($this->chatService->all());
+        $page = $request->get('page', 1);
+        return response()->json($this->chatService->all($page));
     }
 
     public function show(Request $request, $id)

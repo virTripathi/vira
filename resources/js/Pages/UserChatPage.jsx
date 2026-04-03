@@ -6,9 +6,9 @@ export default function UserChatPage({ auth, errors, chat, questions }) {
 
     const initialChats = questions?.length
         ? questions.flatMap((q) => {
-              const msgs = [{ user: "user", message: q.question }];
+              const msgs = [{ user: "user", message: q.question, id: `q_${q.id}` }];
               if (q.answer) {
-                  msgs.push({ user: "system", message: q.answer });
+                  msgs.push({ user: "system", message: q.answer, id: `a_${q.id}` });
               }
               return msgs;
           })
@@ -22,19 +22,22 @@ export default function UserChatPage({ auth, errors, chat, questions }) {
         : [];
 
     return (
-        <AuthenticatedLayout
-            auth={auth}
-            errors={errors}
-            showFloatingAction={false}
-        >
-
-            <UserChatArea
-                chatId={chat?.id}
-                userId={auth?.user?.id}
-                initialChats={initialChats}
-                defaultQuestions={defaultQuestions}
-                className="w-4/5"
-            />
-        </AuthenticatedLayout>
+        <UserChatArea
+            chatId={chat?.id}
+            userId={auth?.user?.id}
+            initialChats={initialChats}
+            defaultQuestions={defaultQuestions}
+            className="w-4/5"
+        />
     );
 }
+
+UserChatPage.layout = page => (
+    <AuthenticatedLayout
+        auth={page.props.auth}
+        errors={page.props.errors}
+        showFloatingAction={false}
+    >
+        {page}
+    </AuthenticatedLayout>
+);
