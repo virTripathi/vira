@@ -8,7 +8,7 @@ use Kreait\Firebase\Contract\Messaging;
 class FirebaseChannel
 {
     protected $messaging;
-
+    // test
     public function __construct(Messaging $messaging)
     {
         $this->messaging = $messaging;
