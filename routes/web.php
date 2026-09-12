@@ -57,6 +57,10 @@ Route::middleware(['auth', 'authorize:user'])->group(function () {
     Route::post('/subscription/{id}/resume', [SubscriptionController::class, 'resume'])->name('subscription.resume');
     Route::post('/notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.readAll');
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    
+    // AI Models
+    Route::get('/ai-models', [\App\Http\Controllers\AiModelController::class, 'index'])->name('ai-models.index');
+    Route::post('/ai-models/select', [\App\Http\Controllers\AiModelController::class, 'select'])->name('ai-models.select');
 });
 Route::get('/google/redirect', [GoogleCalendarController::class, 'redirect'])->name('google.redirect');
 Route::get('/google/callback', [GoogleCalendarController::class, 'callback'])->name('google.callback');

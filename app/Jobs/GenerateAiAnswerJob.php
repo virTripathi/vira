@@ -60,6 +60,13 @@ class GenerateAiAnswerJob implements ShouldQueue
                     ]);
 
                     break;
+                case 'error':
+                    $this->chatQuestion->answers()->create([
+                        'answer'  => "⚠️ " . $response['data'],
+                        'version' => $latestVersion + 1,
+                    ]);
+
+                    break;
                 default:
                     $this->chatQuestion->status = 'failed';
             }

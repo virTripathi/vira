@@ -43,7 +43,8 @@ class User extends Authenticatable
         'google_access_token',
         'google_refresh_token',
         'google_token_expires_at',
-        'fcm_token'
+        'fcm_token',
+        'ai_model_id'
     ];
 
     /**
@@ -88,5 +89,10 @@ class User extends Authenticatable
     public function subscription()
     {
         return $this->hasOne(Subscription::class);
+    }
+
+    public function aiModel()
+    {
+        return $this->belongsTo(AiModel::class);
     }
 }

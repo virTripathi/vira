@@ -44,6 +44,7 @@ export default function AuthenticatedLayout({
                         user={auth.user}
                         links={[
                             { label: "Profile", href: route("profile.edit") },
+                            { label: "AI Models", href: route("ai-models.index") },
                             {
                                 label: "Log Out",
                                 href: route("logout"),

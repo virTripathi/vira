@@ -29,7 +29,7 @@ return [
             'retry_policy' => 'exponential_backoff',
             'integration' => 'local_db',
             'auth_required' => false,
-            'response_text' => 'Reminder to {title} at {time} created successfully'
+            'response_text' => 'OK! I\'ve created a reminder for "{title}" on {time}.'
         ],
 
         'schedule_meeting' => [
@@ -45,7 +45,7 @@ return [
             'async' => true,
             'integration' => 'google_calendar',
             'auth_required' => true,
-            'response_text' => 'Meeting scheduled successfully'
+            'response_text' => 'Great! I\'ve scheduled that meeting for you.'
         ],
 
         'weather_info' => [
